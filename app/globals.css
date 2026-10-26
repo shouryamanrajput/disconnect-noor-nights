@@ -296,3 +296,7 @@ html.lenis body {
   .bd-sway, .bd-twinkle, .bd-float, .bd-glow, .bd-spin { animation: none !important; }
   .bd-twinkle { opacity: 0.6; }
 }
+
+/* ── Scroll reveal (components/Reveal.tsx): visible by default, JS only hides below-the-fold blocks ── */
+.rv-hide { opacity: 0; transform: translateY(var(--rv-y, 22px)); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s); }
+.rv-hide.rv-in { opacity: 1; transform: none; }

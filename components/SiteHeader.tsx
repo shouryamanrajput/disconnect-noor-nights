@@ -14,7 +14,7 @@ const nav = [
 // Fixed, always-solid deep purple header (as in the banner).
 export default function SiteHeader() {
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-marigold/25 bg-plum shadow-[0_4px_20px_rgba(20,2,40,0.35)]">
+    <header className="fixed inset-x-0 top-0 z-50 pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] border-b border-marigold/25 bg-plum shadow-[0_4px_20px_rgba(20,2,40,0.35)]">
       <div className="container-px flex h-14 items-center justify-between gap-3 sm:h-16 sm:gap-4">
         <a href="#top" className="flex min-h-[44px] min-w-0 items-center gap-2.5">
           <Image src="/logo.jpg" alt="Disconnect logo" width={36} height={36} sizes="36px" priority className="h-9 w-9 shrink-0 rounded-full border-2 border-marigold object-cover" />
@@ -33,7 +33,7 @@ export default function SiteHeader() {
             </span>
           ))}
         </nav>
-        <InviteButton className="min-h-[44px] shrink-0 gap-1.5 px-3.5 py-2 text-[13.5px] shadow-[0_3px_0_#356428] sm:px-5 sm:py-2.5 sm:text-sm" />
+        <InviteButton className="min-h-[44px] shrink-0 gap-1.5 px-3 py-2 text-[13px] max-[379px]:[&_svg]:hidden min-[380px]:px-3.5 min-[380px]:text-[13.5px] shadow-[0_3px_0_#356428] sm:px-5 sm:py-2.5 sm:text-sm" />
       </div>
     </header>
   );

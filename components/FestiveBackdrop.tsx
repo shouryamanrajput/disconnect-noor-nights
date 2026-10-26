@@ -62,30 +62,11 @@ function Kandil({ string, delay, style }: { string: number; delay: number; style
   );
 }
 
+// Pre-rendered to public/decor/mandala.svg (24 + 16 petals, dot rings) so it
+// stays out of the page HTML; it only spins slowly behind the cards.
 function Mandala({ className = "", style }: { className?: string; style?: CSSProperties }) {
-  const petals = (n: number, r: number, rx: number, ry: number) =>
-    Array.from({ length: n }).map((_, i) => <ellipse key={`${n}-${i}`} cx="100" cy={100 - r} rx={rx} ry={ry} transform={`rotate(${(i * 360) / n} 100 100)`} />);
-  const dots = (n: number, r: number) =>
-    Array.from({ length: n }).map((_, i) => {
-      const a = (i / n) * Math.PI * 2;
-      return <circle key={`d${n}-${i}`} cx={100 + r * Math.cos(a)} cy={100 + r * Math.sin(a)} r="1.6" fill="#F9DD21" stroke="none" />;
-    });
-  return (
-    <svg viewBox="0 0 200 200" className={`bd-spin absolute ${className}`} style={style}>
-      <g fill="none" stroke="#F9DD21" strokeWidth="1">
-        <circle cx="100" cy="100" r="96" />
-        <circle cx="100" cy="100" r="90" strokeDasharray="2 4" />
-        {petals(24, 74, 7, 16)}
-        <circle cx="100" cy="100" r="56" />
-        {petals(16, 44, 8, 14)}
-        <circle cx="100" cy="100" r="28" />
-        {petals(8, 16, 5, 10)}
-        <circle cx="100" cy="100" r="5" />
-        {dots(24, 60)}
-        {dots(36, 84)}
-      </g>
-    </svg>
-  );
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src="/decor/mandala.svg" alt="" aria-hidden width={200} height={200} loading="lazy" decoding="async" className={`bd-spin absolute h-auto ${className}`} style={style} />;
 }
 
 function Paisley({ className = "", style }: { className?: string; style?: CSSProperties }) {

@@ -16,7 +16,7 @@ function Bead({ cx, cy, r = 7, tone = "#FFB000" }: { cx: number; cy: number; r?:
 }
 
 /* ── Toran: swags of marigolds; `full` adds hanging strands + fairy lights ── */
-export function Toran({ className = "", full = false }: P & { full?: boolean }) {
+export function ToranArt({ className = "", full = false }: P & { full?: boolean }) {
   const W = 1440;
   const swags = full ? 9 : 8;
   const seg = W / swags;
@@ -219,7 +219,7 @@ function Leaf({ x, y, len, a, c = "#2F7A3A" }: { x: number; y: number; len: numb
 
 /* ── Bottom-corner cluster: diyas + marigolds + leaves ─────
    `side` mirrors it; `compact` = one diya + two flowers for phones. */
-export function DiyaCluster({ className = "", side = "left", compact = false, uid }: P & { side?: "left" | "right"; compact?: boolean; uid: string }) {
+export function DiyaClusterArt({ className = "", side = "left", compact = false, uid }: P & { side?: "left" | "right"; compact?: boolean; uid: string }) {
   return (
     <svg viewBox={compact ? "0 0 160 120" : "0 0 320 230"} aria-hidden className={`pointer-events-none overflow-visible ${className}`} style={side === "right" ? { transform: "scaleX(-1)" } : undefined}>
       <defs>
@@ -256,6 +256,39 @@ export function DiyaCluster({ className = "", side = "left", compact = false, ui
           <MarigoldFlower cx={268} cy={214} r={18} warm />
           <ClayDiya x={292} y={196} w={30} delay={0.8} u={uid} />
         </>
+      )}
+    </svg>
+  );
+}
+
+/* ── Lightweight wrappers used by the page ──────────────────
+   ToranArt / DiyaClusterArt above are the drawing sources; their output is
+   pre-rendered into public/decor/*.svg (animations embedded) so the page HTML
+   and the React payload stay small. The wrapper <svg> keeps the exact same
+   viewBox / sizing classes, and the <image> covers a slightly larger canvas so
+   petals and leaves that spill over the edge still show. */
+export function Toran({ className = "", full = false }: P & { full?: boolean }) {
+  if (!full) {
+    return (
+      <svg viewBox="0 0 1440 52" preserveAspectRatio="xMidYMin slice" aria-hidden className={`pointer-events-none h-[34px] w-full sm:h-[44px] ${className}`}>
+        <image href="/decor/toran.svg" x="0" y="0" width="1440" height="52" preserveAspectRatio="none" />
+      </svg>
+    );
+  }
+  return (
+    <svg viewBox="0 0 1440 200" aria-hidden className={`pointer-events-none h-auto w-full ${className}`}>
+      <image href="/decor/toran-full.svg" x="0" y="0" width="1440" height="200" preserveAspectRatio="none" />
+    </svg>
+  );
+}
+
+export function DiyaCluster({ className = "", side = "left", compact = false }: P & { side?: "left" | "right"; compact?: boolean; uid?: string }) {
+  return (
+    <svg viewBox={compact ? "0 0 160 120" : "0 0 320 230"} aria-hidden className={`pointer-events-none overflow-visible ${className}`} style={side === "right" ? { transform: "scaleX(-1)" } : undefined}>
+      {compact ? (
+        <image href="/decor/diya-cluster-compact.svg" x="-40" y="-10" width="220" height="150" preserveAspectRatio="none" />
+      ) : (
+        <image href="/decor/diya-cluster.svg" x="-80" y="-20" width="440" height="280" preserveAspectRatio="none" />
       )}
     </svg>
   );
@@ -369,7 +402,7 @@ export function ArchTile({ className = "" }: P) {
 const PLAQUE = "M22 2 H278 C284 10 290 14 298 16 C292 26 292 44 298 54 C290 56 284 60 278 68 H22 C16 60 10 56 2 54 C8 44 8 26 2 16 C10 14 16 10 22 2Z";
 export function Plaque({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative px-8 py-3.5 ${className}`}>
+    <div className={`relative px-6 py-3.5 min-[380px]:px-8 ${className}`}>
       <svg viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden className="absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_6px_12px_rgba(70,8,60,0.35)]">
         <path d={PLAQUE} fill="#E2247C" stroke="#FB8E32" strokeWidth="3" vectorEffect="non-scaling-stroke" />
         <path d={PLAQUE} fill="none" stroke="#FB8E32" strokeWidth="1.4" vectorEffect="non-scaling-stroke" transform="translate(10 6) scale(0.933 0.83)" />

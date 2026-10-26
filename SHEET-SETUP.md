@@ -1,6 +1,19 @@
 # Registrations → Google Sheet (Apps Script web app)
 
-The site's "Request an invite" form sends each registration straight to a Google Sheet. No Google Form, API key or token is involved.
+The site's "Request an invite" form sends each registration straight to a Google Sheet, then (step 2) the guest pays by UPI and uploads a payment screenshot, which the script saves to your Google Drive and links in the same row. No Google Form, API key or token is involved.
+
+## ⚠️ Update for the payment step (do this now)
+
+The payment step needs the **new** `scripts/sheet-apps-script.gs` and **Google Drive** access. Until you redeploy, registrations still save but screenshots are ignored.
+
+1. Open the sheet → **Extensions → Apps Script**.
+2. Select everything in `Code.gs`, **replace it** with the full contents of the new `scripts/sheet-apps-script.gs`, and click **Save** (💾).
+3. (Recommended) Approve Drive access first: in the function dropdown at the top choose **getFolder_** → **Run**. Google shows **Review permissions** → pick your account → **Advanced → Go to (project) (unsafe)** → **Allow**. It now asks for Drive as well as Sheets. This run also creates the Drive folder **Disconnect Diwali Payments**.
+4. **Deploy → Manage deployments** → select the existing Web app → **pencil (Edit)** → **Version: New version** → **Deploy**. If it asks to authorise again, approve it.
+   Use *Manage deployments*, **not** *New deployment*, so the `/exec` URL (already in `lib/config.ts`) stays the same.
+5. Test: register on the site with your own number, skip the actual payment, upload any image as the screenshot, and check that the row shows **Payment status = Screenshot received** with a Drive link, and that the file is in **My Drive → Disconnect Diwali Payments** as `DSC-XXXXXX_<name>.jpg`. Delete the test row and file afterwards.
+
+**Payment QR:** the site shows `public/payment-qr.png` (currently ISHITA's UPI QR, ₹1,199). To change it, replace that file with a new QR image (square, white margin) and update `site.payment` in `lib/config.ts` (amount, `amountValue`, `upiId`, `payeeName`). If the file is missing the site shows a "QR coming soon" placeholder.
 
 ## One-time setup (about 5 minutes)
 
@@ -37,9 +50,11 @@ The `/exec` URL stays the same, so the site doesn't need changing. (Choosing "Ne
 
 ## Notes
 
-- Columns: Timestamp (IST), Name, Age group, Mobile, Email, Instagram, How did you hear, Why join, Comfortable with strangers, Source page.
+- Columns: Timestamp (IST), Name, Age group, Mobile, Email, Instagram, How did you hear, Why join, Comfortable with strangers, Source page, **Registration ID**, **Payment status**, **Payment screenshot**. If your sheet already has a header row without the last three, the script adds them at the end automatically (existing columns aren't moved). Rows are written by header name, so you can reorder columns.
+- Each registration gets a Registration ID made on the site (e.g. `DSC-7KQ2MX`) and Payment status **Pending payment**. When the screenshot arrives the row is found by Registration ID (or, failing that, the newest row with the same mobile) and set to **Screenshot received** with the Drive file link. If no row matches, a new row marked "Screenshot received (no matching registration)" is added so nothing is lost. Verify the payment in your UPI app, then change the status by hand (e.g. "Paid ✔").
+- Screenshots: JPG, PNG, WebP or HEIC only (type and file signature are both checked), max ~5 MB (the site shrinks them to about 1280 px / under 500 KB first). Files are saved privately in **Disconnect Diwali Payments** in your Drive; the link only opens for you (and anyone you share the folder with).
 - Values starting with `=`, `+`, `-` or `@` are stored with a leading `'` so they're treated as text (so `+91…` numbers and `@handles` show as typed, and formulas can't be injected).
 - Each field is trimmed and capped at 200 characters; the mobile number must be 10 digits (+91 / 0 prefixes are accepted).
 - A hidden "company" field catches bots: if it's filled, the script replies OK but saves nothing.
-- Because the browser sends the request in `no-cors` mode, the site can't read the script's reply. It shows the thank-you screen once the request is delivered, and the retry message only when the network fails.
+- Because the browser sends the request in `no-cors` mode, the site can't read the script's reply. It moves to the payment step (and later the thank-you screen) once each request is delivered, and the retry message only when the network fails.
 - Anyone with the `/exec` URL can post to it (it's public by design); only you can read the Sheet.

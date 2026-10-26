@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { site } from "@/lib/config";
 import { launchFireworks } from "@/lib/fireworks";
 import Reveal from "@/components/Reveal";
@@ -10,6 +10,7 @@ import InstagramIcon from "@/components/InstagramIcon";
 import { EnvelopeIcon } from "@/components/Icons";
 import { Diya, Ornament } from "@/components/Decor";
 import FestiveBackdrop from "@/components/FestiveBackdrop";
+import PaymentStep, { type Reg } from "@/components/PaymentStep";
 
 type Values = {
   name: string;
@@ -23,7 +24,8 @@ type Values = {
   comfortable: string;
 };
 type Errors = Partial<Record<keyof Values, string>>;
-type Status = "idle" | "sending" | "done" | "soon" | "error";
+type Status = "idle" | "sending" | "pay" | "done" | "soon" | "error";
+const STORE_KEY = "dd-registration"; // sessionStorage: lets a visitor finish paying after a reload
 
 const empty: Values = { name: "", ageGroup: "", mobile: "", email: "", instagram: "", heardFrom: "", heardFromOther: "", why: "", comfortable: "" };
 // Order the fields are checked in, so focus lands on the first problem.
@@ -55,10 +57,54 @@ function validate(v: Values): Errors {
   return e;
 }
 
+/** DSC-XXXXXX, no look-alike characters (0/O, 1/I/L). */
+function newRegId() {
+  const abc = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+  const bytes = new Uint8Array(6);
+  crypto.getRandomValues(bytes);
+  return "DSC-" + Array.from(bytes, (b) => abc[b % abc.length]).join("");
+}
+
+function readStored(): Reg | null {
+  try {
+    const r = JSON.parse(sessionStorage.getItem(STORE_KEY) || "null");
+    return r && /^DSC-[A-Z0-9]{6}$/.test(r.regId) && r.mobile ? (r as Reg) : null;
+  } catch {
+    return null;
+  }
+}
+
+/* step indicator: 1 Details, 2 Payment */
+function Steps({ step }: { step: 1 | 2 | 3 }) {
+  const items = ["Details", "Payment"];
+  return (
+    <ol aria-label="Registration steps" className="mx-auto mt-6 flex max-w-[320px] items-center justify-center gap-2">
+      {items.map((label, i) => {
+        const n = i + 1;
+        const done = step > n;
+        const current = step === n;
+        return (
+          <li key={label} aria-current={current ? "step" : undefined} className="flex items-center gap-2">
+            {i > 0 && <span aria-hidden className={`h-0.5 w-8 rounded-full sm:w-12 ${step > 1 ? "bg-marigold" : "bg-cream/30"}`} />}
+            <span aria-hidden className={`grid h-8 w-8 place-items-center rounded-full border-2 font-sans text-[13.5px] font-extrabold ${done || current ? "border-marigold bg-marigold text-plum" : "border-cream/40 text-cream/80"}`}>
+              {done ? "✓" : n}
+            </span>
+            <span className={`font-sans text-[14px] font-bold ${current ? "text-marigold" : "text-cream/85"}`}>
+              {label}
+              <span className="sr-only">{done ? " (done)" : current ? " (current step)" : ""}</span>
+            </span>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 /** Payload for the Apps Script web app (scripts/sheet-apps-script.gs). */
-function buildBody(v: Values, company: string) {
+function buildBody(v: Values, company: string, regId: string) {
   const ig = stripAt(v.instagram);
   return new URLSearchParams({
+    regId,
     name: v.name.trim(),
     ageGroup: v.ageGroup,
     mobile: `+91${normaliseMobile(v.mobile)}`,
@@ -144,6 +190,18 @@ export default function RegisterForm() {
   const submitRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
+  const [reg, setReg] = useState<Reg | null>(null);
+
+  // Came back after a reload mid-payment? Resume at step 2.
+  useEffect(() => {
+    const stored = readStored();
+    if (stored) {
+      setReg(stored);
+      setStatus("pay");
+    }
+  }, []);
+
+  const scrollToPanel = () => requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
 
   const set = <K extends keyof Values>(k: K, val: Values[K]) => {
     const next = { ...v, [k]: val };
@@ -180,13 +238,42 @@ export default function RegisterForm() {
     try {
       // Apps Script doesn't send CORS headers, so the response is opaque;
       // reaching here means the request was delivered (a network failure throws).
-      await fetch(endpoint, { method: "POST", mode: "no-cors", body: buildBody(v, honeypotRef.current?.value ?? "") });
-      burst();
-      setStatus("done");
-      requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+      const regId = newRegId();
+      const body = buildBody(v, honeypotRef.current?.value ?? "", regId);
+      await fetch(endpoint, { method: "POST", mode: "no-cors", body });
+      const next: Reg = { regId, name: body.get("name") || "", mobile: body.get("mobile") || "", email: body.get("email") || "" };
+      try {
+        sessionStorage.setItem(STORE_KEY, JSON.stringify(next));
+      } catch {
+        /* private mode: the step still works, it just won't survive a reload */
+      }
+      setReg(next);
+      setStatus("pay");
+      scrollToPanel();
     } catch {
       setStatus("error");
     }
+  }
+
+  function paid(from?: DOMRect) {
+    if (from) launchFireworks(from.left + from.width / 2, from.top + from.height / 2);
+    else burst();
+    try {
+      sessionStorage.removeItem(STORE_KEY);
+    } catch {}
+    setStatus("done");
+    scrollToPanel();
+  }
+  function restart() {
+    try {
+      sessionStorage.removeItem(STORE_KEY);
+    } catch {}
+    setReg(null);
+    setV(empty);
+    setErrors({});
+    setTried(false);
+    setStatus("idle");
+    scrollToPanel();
   }
 
   const errCount = Object.keys(errors).length;
@@ -214,11 +301,16 @@ export default function RegisterForm() {
                 <p className="mt-3 font-sans text-[13.5px] font-bold uppercase tracking-[0.08em] text-gold sm:text-[14.5px]">{r.subline}</p>
               </div>
 
-              {status === "done" ? (
+              <Steps step={status === "done" ? 3 : status === "pay" ? 2 : 1} />
+
+              {status === "pay" && reg ? (
+                <PaymentStep reg={reg} endpoint={site.sheetEndpoint} onDone={paid} onRestart={restart} />
+              ) : status === "done" ? (
                 <div role="status" className="mx-auto mt-8 max-w-[460px] text-center">
                   <div className="coral-pill mx-auto inline-block rounded-full px-6 py-2 font-caps text-[13px] font-bold uppercase tracking-[0.06em]">Request received</div>
                   <p className="gold-text title-lg mt-6 font-display text-[2rem] uppercase leading-tight sm:text-[2.6rem]">{r.thanksTitle}</p>
                   <p className="mt-3 text-[16px] leading-relaxed text-cream">{r.thanksBody}</p>
+                  {reg && <p className="mt-3 text-[14px] text-cream/85">Registration ID <span className="font-mono font-bold text-marigold">{reg.regId}</span>. Keep it handy.</p>}
                 </div>
               ) : (
                 <form noValidate onSubmit={onSubmit} className="mx-auto mt-8 max-w-[560px] space-y-7 sm:mt-10" aria-describedby="rf-note">

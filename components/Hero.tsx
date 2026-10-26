@@ -54,8 +54,8 @@ export default function Hero() {
       </div>
 
       {/* desktop: elephants at the far edges + diya clusters in the corners */}
-      <AnimatedElephant side="left" sizes="280px" priority className="absolute left-0 top-[41%] z-10 hidden w-[clamp(170px,19vw,300px)] lg:block" />
-      <AnimatedElephant side="right" sizes="280px" priority phase={260} className="absolute right-0 top-[41%] z-10 hidden w-[clamp(170px,19vw,300px)] lg:block" />
+      <AnimatedElephant side="left" sizes="280px" className="absolute left-0 top-[41%] z-10 hidden w-[clamp(170px,19vw,300px)] lg:block" />
+      <AnimatedElephant side="right" sizes="280px" phase={260} className="absolute right-0 top-[41%] z-10 hidden w-[clamp(170px,19vw,300px)] lg:block" />
       <DiyaCluster uid="dcl" side="left" className="absolute -bottom-2 left-0 z-10 hidden w-[clamp(180px,17vw,290px)] lg:block" />
       <DiyaCluster uid="dcr" side="right" className="absolute -bottom-2 right-0 z-10 hidden w-[clamp(180px,17vw,290px)] lg:block" />
 
@@ -63,8 +63,8 @@ export default function Hero() {
         {/* ── Arch card ── */}
         <div className="relative w-full max-w-[400px] sm:max-w-[460px] lg:w-[clamp(390px,31vw,450px)] lg:max-w-none">
           {/* phones / tablets: elephants peek from the arch's top corners */}
-          <AnimatedElephant side="left" sizes="150px" className="absolute -left-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-left-24 sm:-top-6 sm:w-[150px] lg:hidden" />
-          <AnimatedElephant side="right" sizes="150px" phase={260} className="absolute -right-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-right-24 sm:-top-6 sm:w-[150px] lg:hidden" />
+          <AnimatedElephant side="left" sizes="(min-width: 640px) 150px, 104px" priority className="absolute -left-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-left-24 sm:-top-6 sm:w-[150px] lg:hidden" />
+          <AnimatedElephant side="right" sizes="(min-width: 640px) 150px, 104px" priority phase={260} className="absolute -right-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-right-24 sm:-top-6 sm:w-[150px] lg:hidden" />
           <Rangoli className="absolute -bottom-[290px] left-1/2 hidden h-[640px] w-[640px] -translate-x-1/2 scale-y-[0.24] lg:block" />
 
           <div className="relative px-11 pb-[3.5rem] pt-[4rem] text-center min-[400px]:px-12 sm:px-16 sm:pb-[4.6rem] sm:pt-[5rem] lg:px-14 lg:pb-[3.4rem] lg:pt-[4rem]">

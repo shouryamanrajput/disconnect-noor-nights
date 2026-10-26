@@ -27,7 +27,7 @@ const config: Config = {
         cream: "#FFF4D6", // body text on purple
       },
       fontFamily: {
-        hindi: ["var(--font-hindi)", "serif"],
+        hindi: ["var(--font-hindi-title)", "var(--font-hindi)", "serif"],
         display: ["var(--font-display)", "Georgia", "serif"],
         caps: ["var(--font-caps)", "Georgia", "serif"],
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

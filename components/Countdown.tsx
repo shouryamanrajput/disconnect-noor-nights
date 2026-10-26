@@ -16,11 +16,14 @@ function parts(ms: number) {
   ];
 }
 
+const earlyTicker = `(function(){var t=${target},k=["Days","Hours","Mins","Secs"];function f(){if(window.__cdLive)return;var s=Math.max(0,Math.floor((t-Date.now())/1e3)),v=[Math.floor(s/86400),Math.floor(s%86400/3600),Math.floor(s%3600/60),s%60];for(var i=0;i<4;i++){document.querySelectorAll('[data-cd="'+k[i]+'"]').forEach(function(e){e.textContent=String(v[i]).padStart(2,"0")})}setTimeout(f,1e3)}f()})()`;
+
 // Live countdown to the party (31 Oct 2026, 5:30 PM IST by default).
 export default function Countdown() {
   const [now, setNow] = useState<number | null>(null);
 
   useEffect(() => {
+    (window as unknown as { __cdLive?: boolean }).__cdLive = true; // stops the pre-hydration ticker below
     setNow(Date.now());
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
@@ -45,7 +48,7 @@ export default function Countdown() {
             <div key={p.l} className="relative aspect-[100/124] drop-shadow-[0_6px_14px_rgba(20,2,40,0.45)]">
               <ArchTile />
               <div className="relative flex h-full flex-col items-center justify-center pt-1">
-                <div className="font-sans text-[1.65rem] font-extrabold leading-none tabular-nums text-marigold sm:text-[2.1rem]" suppressHydrationWarning>
+                <div data-cd={p.l} className="font-sans text-[1.65rem] font-extrabold leading-none tabular-nums text-marigold sm:text-[2.1rem]" suppressHydrationWarning>
                   {p.v < 0 ? "--" : String(p.v).padStart(2, "0")}
                 </div>
                 <div className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-cream/90">{p.l}</div>
@@ -54,6 +57,9 @@ export default function Countdown() {
           ))}
         </div>
       )}
+      {/* Fill the digits straight away from the static HTML instead of showing
+          "--" until React hydrates; React takes over on mount. */}
+      <script dangerouslySetInnerHTML={{ __html: earlyTicker }} />
       <Ornament className="mt-4 hidden lg:flex" />
     </div>
   );

@@ -72,7 +72,7 @@ export const site = {
       "Filling out this form is a registration request and does not automatically " +
       "confirm your entry. You'll receive confirmation and further details from Disconnect.",
     thanksTitle: "You're on the request list!",
-    thanksBody: "We'll confirm on WhatsApp/Instagram soon.",
+    thanksBody: "Payment screenshot received. We'll verify it and confirm on WhatsApp/Instagram soon.",
     soonMessage: "Registrations open soon! Meanwhile, DM us on Instagram to get on the list.",
   },
 
@@ -82,7 +82,25 @@ export const site = {
    * friendly "registrations open soon" message and makes no network call
    * (or opens links.register instead, if that is set).
    */
-  sheetEndpoint: "", // CONFIRM: https://script.google.com/macros/s/<DEPLOYMENT_ID>/exec
+  sheetEndpoint: "https://script.google.com/macros/s/AKfycbzEtkb54D0k6QKTSuSdFRTPuyBnOc5Ioiy2q__k8hcAUv5FRLRnT_PUmqBRrkPDbxgh/exec", // Google Apps Script web app (see SHEET-SETUP.md). Must be deployed with access "Anyone".
+
+  /**
+   * PAYMENT (step 2 of the form). After the details are sent, the visitor
+   * sees this QR / UPI ID, pays, and uploads a screenshot. The screenshot is
+   * saved to your Google Drive ("Disconnect Diwali Payments") by the Apps
+   * Script and linked in the sheet row.
+   */
+  payment: {
+    amount: "₹1,199", // shown to guests
+    amountValue: "1199.00", // same amount for the UPI app link (am=)
+    // UPI QR (cropped from the payee's QR; it already carries ₹1,199). If the
+    // file is missing, a "QR coming soon" placeholder is shown instead.
+    qrImage: "/payment-qr.png",
+    upiId: "8168133686@axisbank", // copy button + "Pay with UPI app" on phones
+    payeeName: "ISHITA", // shown as "Paying to ISHITA" and sent as pn= in the UPI link
+    title: "Pay to confirm",
+    body: "Use any UPI app (GPay, PhonePe, Paytm, BHIM…). The QR already has the amount filled in.",
+  },
 
   form: {
     ageGroups: ["18–20", "21–24", "25–29", "30+"],

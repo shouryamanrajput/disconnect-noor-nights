@@ -1,16 +1,17 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
-// Gentle scroll reveal. Subtle and purposeful, never decorative noise.
-// Skipped entirely for visitors who prefer reduced motion.
+// Gentle scroll reveal. Content is fully visible in the server HTML (nothing
+// waits for JavaScript); after hydration, blocks that are still below the
+// fold are tucked away and eased in as they scroll into view. Skipped for
+// visitors who prefer reduced motion. CSS lives in globals.css (.rv-*).
 export default function Reveal({
   children,
   delay = 0,
   y = 22,
   className = "",
-  as = "div",
+  as: Tag = "div",
 }: {
   children: ReactNode;
   delay?: number;
@@ -18,18 +19,33 @@ export default function Reveal({
   className?: string;
   as?: "div" | "section" | "li" | "span";
 }) {
-  const MotionTag = motion[as] as typeof motion.div;
-  const reduce = useReducedMotion();
-  if (reduce) return <MotionTag className={className}>{children}</MotionTag>;
+  const ref = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Already on screen (or above it)? Leave it alone, no flash.
+    if (el.getBoundingClientRect().top < window.innerHeight - 60) return;
+    el.style.setProperty("--rv-y", `${y}px`);
+    el.style.setProperty("--rv-delay", `${delay}s`);
+    el.classList.add("rv-hide");
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          el.classList.add("rv-in");
+          io.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -60px 0px" },
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [delay, y]);
+
   return (
-    <MotionTag
-      className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
-    >
+    <Tag ref={ref as never} className={className}>
       {children}
-    </MotionTag>
+    </Tag>
   );
 }
