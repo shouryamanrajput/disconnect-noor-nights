@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { site } from "@/lib/config";
 import { launchFireworks } from "@/lib/fireworks";
-import Reveal from "@/components/Reveal";
 import AnimatedElephant from "@/components/AnimatedElephant";
 import WhatsAppIcon from "@/components/WhatsAppIcon";
 import InstagramIcon from "@/components/InstagramIcon";
@@ -117,7 +116,7 @@ function buildBody(v: Values, company: string, regId: string) {
 
 /* ── small building blocks ─────────────────────────────── */
 function Num({ n }: { n: string }) {
-  return <span aria-hidden className="mr-2 inline-grid h-7 w-7 shrink-0 place-items-center rounded-full bg-marigold font-sans text-[12px] font-extrabold text-plum">{n}</span>;
+  return <span aria-hidden className="mr-2 inline-grid h-6 w-6 shrink-0 place-items-center rounded-full bg-marigold font-sans text-[11px] font-extrabold text-plum">{n}</span>;
 }
 function ErrorText({ id, msg }: { id: string; msg?: string }) {
   if (!msg) return null;
@@ -129,39 +128,39 @@ function ErrorText({ id, msg }: { id: string; msg?: string }) {
   );
 }
 const inputBase =
-  "block w-full min-h-[48px] rounded-xl border-2 bg-cream px-4 py-2.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
+  "block w-full h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
 const inputCls = (bad?: string) => `${inputBase} ${bad ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`;
 
 function Field({ id, n, label, hint, error, children }: { id: string; n?: string; label: string; hint?: string; error?: string; children: ReactNode }) {
   return (
     <div>
-      <label htmlFor={id} className="flex items-center font-sans text-[15.5px] font-bold leading-snug text-cream sm:text-base">
-        {n ? <Num n={n} /> : <span aria-hidden className="mr-2 inline-block h-7 w-7 shrink-0" />}
+      <label htmlFor={id} className="flex items-center font-sans text-[15px] font-semibold leading-snug text-cream sm:text-base">
+        {n ? <Num n={n} /> : <span aria-hidden className="mr-2 inline-block h-6 w-6 shrink-0" />}
         {label}
       </label>
-      {hint && <p id={`${id}-hint`} className="mt-1 pl-9 text-[13px] text-cream/75">{hint}</p>}
-      <div className="mt-2.5">{children}</div>
+      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-8 text-[12.5px] text-cream/70">{hint}</p>}
+      <div className="mt-2">{children}</div>
       <ErrorText id={`${id}-err`} msg={error} />
     </div>
   );
 }
 
-function Pills({ name, n, legend, options, value, onChange, error, cols = "" }: { name: keyof Values; n: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; cols?: string }) {
+function Pills({ name, n, legend, options, value, onChange, error, grid = false }: { name: keyof Values; n: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; grid?: boolean }) {
   return (
     <fieldset id={`rf-${name}`} tabIndex={-1} aria-invalid={!!error} aria-describedby={error ? `rf-${name}-err` : undefined} className="outline-none">
-      <legend className="flex items-center font-sans text-[15.5px] font-bold leading-snug text-cream sm:text-base">
+      <legend className="flex items-center font-sans text-[15px] font-semibold leading-snug text-cream sm:text-base">
         <Num n={n} />
         {legend}
       </legend>
-      <div className={`mt-2.5 flex flex-wrap gap-2 ${cols}`}>
+      <div className={`mt-2 ${grid ? "grid grid-cols-4 gap-1.5 sm:gap-2" : "flex flex-wrap gap-1.5 sm:gap-2"}`}>
         {options.map((o) => {
           const id = `rf-${name}-${o.replace(/\W+/g, "-")}`;
           return (
-            <span key={o} className="relative">
+            <span key={o} className="relative block">
               <input id={id} type="radio" name={name} value={o} checked={value === o} onChange={() => onChange(o)} className="peer sr-only" />
               <label
                 htmlFor={id}
-                className={`flex min-h-[44px] cursor-pointer select-none items-center rounded-full border-2 px-4 py-2 font-sans text-[14.5px] font-bold transition-colors peer-checked:border-marigold peer-checked:bg-marigold peer-checked:text-plum peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${
+                className={`flex min-h-[40px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] px-3.5 py-1.5 text-center font-sans text-[14px] font-semibold leading-tight transition-colors peer-checked:border-marigold peer-checked:bg-marigold peer-checked:text-plum peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${
                   error ? "border-[#FF6FA3] text-cream" : "border-marigold/55 text-cream hover:border-marigold hover:bg-white/5"
                 }`}
               >
@@ -318,7 +317,7 @@ export default function RegisterForm() {
     <section id="register" className="bg-poster relative scroll-mt-14 overflow-hidden pb-20 pt-14 sm:pb-24 sm:pt-20">
       <FestiveBackdrop variant="full" inner={350} />
       <div className="container-px relative z-10 max-w-[760px]">
-        <Reveal>
+        <div>
           {/* elephant pair facing a diya, sitting on the arch */}
           <div aria-hidden className="relative z-10 -mb-6 flex items-end justify-center gap-1 sm:-mb-8 sm:gap-3">
             <AnimatedElephant side="left" sizes="120px" className="w-[78px] sm:w-[112px]" />
@@ -327,7 +326,7 @@ export default function RegisterForm() {
           </div>
 
           {/* purple jharokha panel: arched top, gold inner frame */}
-          <div ref={panelRef} className="register-arch bg-royal-tex relative scroll-mt-20 px-4 pb-8 pt-14 shadow-[0_20px_50px_rgba(70,8,60,0.35)] sm:px-10 sm:pb-12 sm:pt-20">
+          <div ref={panelRef} className="register-arch bg-royal-tex relative scroll-mt-20 px-4 pb-7 pt-12 shadow-[0_12px_28px_rgba(70,8,60,0.3)] sm:px-10 sm:pb-12 sm:pt-20">
             <div aria-hidden className="register-arch-inner pointer-events-none absolute inset-2.5 border-2 border-marigold/70 sm:inset-4" />
             <div className="relative">
               <div className="text-center">
@@ -348,7 +347,7 @@ export default function RegisterForm() {
                   {reg && <p className="mt-3 text-[14px] text-cream/85">Registration ID <span className="font-mono font-bold text-marigold">{reg.regId}</span>. Keep it handy.</p>}
                 </div>
               ) : (
-                <form noValidate onSubmit={onSubmit} className="mx-auto mt-8 max-w-[560px] space-y-7 sm:mt-10" aria-describedby="rf-note">
+                <form noValidate onSubmit={onSubmit} className="mx-auto mt-6 max-w-[560px] space-y-5 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
                   {notice && (
                     <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[14.5px] font-bold">
                       {notice}
@@ -358,13 +357,13 @@ export default function RegisterForm() {
                     <input id="rf-name" name="name" type="text" autoComplete="name" required aria-required aria-invalid={!!errors.name} aria-describedby={desc("name")} value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Your full name" maxLength={80} className={inputCls(errors.name)} />
                   </Field>
 
-                  <Pills name="ageGroup" n="02" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} />
+                  <Pills name="ageGroup" n="02" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} grid />
 
-                  <div className="grid gap-7 sm:grid-cols-2 sm:gap-5">
+                  <div className="grid gap-5 sm:grid-cols-2">
                     <Field id="rf-mobile" label="Mobile number" error={errors.mobile}>
                       <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.mobile ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                         <span aria-hidden className="grid shrink-0 place-items-center border-r-2 border-plum/15 bg-marigold/90 px-3 font-sans text-[16px] font-extrabold text-plum">+91</span>
-                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block min-h-[44px] w-full min-w-0 bg-transparent px-3 py-2.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
+                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-10 w-full min-w-0 bg-transparent px-3 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
                       </div>
                     </Field>
                     <Field id="rf-email" label="Email" error={errors.email}>
@@ -374,8 +373,8 @@ export default function RegisterForm() {
 
                   <Field id="rf-instagram" n="03" label="What’s your Instagram handle?" hint="Optional, but useful for event communication" error={errors.instagram}>
                     <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.instagram ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
-                      <span aria-hidden className="grid shrink-0 place-items-center pl-4 font-sans text-[16px] font-extrabold text-plum/60">@</span>
-                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block min-h-[44px] w-full min-w-0 bg-transparent py-2.5 pl-1 pr-4 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
+                      <span aria-hidden className="grid shrink-0 place-items-center pl-3.5 font-sans text-[16px] font-extrabold text-plum/60">@</span>
+                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-10 w-full min-w-0 bg-transparent py-2 pl-1 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
                     </div>
                   </Field>
 
@@ -402,8 +401,8 @@ export default function RegisterForm() {
                         Please fix the {errCount === 1 ? "highlighted field" : `${errCount} highlighted fields`} above.
                       </p>
                     )}
-                    <button ref={submitRef} type="submit" disabled={status === "sending"} className="btn-primary btn-spark min-h-[56px] w-full text-lg disabled:cursor-wait disabled:opacity-80">
-                      <EnvelopeIcon className="h-5 w-5 shrink-0 text-plum" />
+                    <button ref={submitRef} type="submit" disabled={status === "sending"} className="btn-primary btn-spark min-h-[50px] w-full py-3 text-[16px] disabled:cursor-wait disabled:opacity-80 sm:min-h-[56px] sm:text-lg">
+                      <EnvelopeIcon className="h-[18px] w-[18px] shrink-0 text-plum" />
                       {status === "sending" ? "Sending…" : site.ctas.primary}
                     </button>
                     <div aria-live="polite">
@@ -419,7 +418,7 @@ export default function RegisterForm() {
                 </form>
               )}
 
-              <p id="rf-note" className="mx-auto mt-7 max-w-[520px] text-center text-[13.5px] leading-relaxed text-cream/85">{r.note}</p>
+              <p id="rf-note" className="mx-auto mt-5 max-w-[460px] text-balance text-center text-[12.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0 font-semibold sm:gap-x-6">
                 <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <WhatsAppIcon className="h-5 w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
@@ -430,7 +429,7 @@ export default function RegisterForm() {
               </div>
             </div>
           </div>
-        </Reveal>
+        </div>
       </div>
     </section>
   );

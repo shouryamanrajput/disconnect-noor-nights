@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { Laila, Amarante, Montserrat, PT_Serif, Fraunces } from "next/font/google";
 import localFont from "next/font/local";
+import { preload } from "react-dom";
 import "./globals.css";
 import { site } from "@/lib/config";
 import SmoothScroll from "@/components/SmoothScroll";
+import PauseOffscreen from "@/components/PauseOffscreen";
 
 // Fonts matched against the poster (see shots/font-compare.png):
 // "दिवाली" → Laila Bold (heavy Devanagari with cut, flared terminals)
@@ -47,11 +49,14 @@ export const viewport: Viewport = {
   themeColor: "#5B1A80",
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover", // lets env(safe-area-inset-bottom) work for the sticky bar
+  viewportFit: "cover", // lets env(safe-area-inset-*) work on notched phones
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // paper textures used by the hero/background (fetched early, tiny tiles)
+  preload("/tex/grain.webp", { as: "image", fetchPriority: "high", media: "(min-width: 1024px)" });
+  preload("/tex/wash.webp", { as: "image", fetchPriority: "high" });
   return (
     <html
       lang="en"
@@ -60,6 +65,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body className="bg-poster font-sans text-cream antialiased" suppressHydrationWarning>
         <SmoothScroll />
+        <PauseOffscreen />
         {children}
       </body>
     </html>

@@ -8,7 +8,8 @@ import Image from "next/image";
 // swing every ~1s (up, back, pause). Slight head bob follows. Reduced motion:
 // static. Left elephant faces right; the right one is its mirror.
 // Plain requestAnimationFrame + a spring (no animation library), so the
-// page ships ~45 KB less JavaScript. Pauses while hidden (e.g. desktop pair on phones).
+// page ships ~45 KB less JavaScript. Pauses while hidden (e.g. desktop pair on
+// phones) or scrolled off screen (IntersectionObserver); writes transform only.
 const W = 272;
 const H = 261;
 const PIVOT_X = 190 / W; // trunk root in the left-facing art
@@ -31,7 +32,9 @@ export default function AnimatedElephant({ side, className = "", sizes = "280px"
     let vel = 0; // scroll velocity, px/s (smoothed)
     let x = 0; // spring position (degrees)
     let v = 0; // spring velocity
+    let visible = true;
     const tick = (t: number) => {
+      if (!visible) return; // offscreen: stop the loop until it scrolls back
       raf = requestAnimationFrame(tick);
       const dt = Math.min(0.033, Math.max(0.001, (t - last) / 1000));
       last = t;
@@ -50,6 +53,16 @@ export default function AnimatedElephant({ side, className = "", sizes = "280px"
       head.style.transform = `translateY(${(a * 0.18).toFixed(2)}px) rotate(${(a * 0.08 * dir).toFixed(2)}deg)`;
     };
     raf = requestAnimationFrame(tick);
+    const io = new IntersectionObserver(([e]) => {
+      const was = visible;
+      visible = e.isIntersecting;
+      if (visible && !was) {
+        last = performance.now();
+        lastY = window.scrollY;
+        raf = requestAnimationFrame(tick);
+      }
+    });
+    io.observe(head);
     const onMq = () => {
       if (mq.matches) {
         trunk.style.transform = "";
@@ -59,6 +72,7 @@ export default function AnimatedElephant({ side, className = "", sizes = "280px"
     mq.addEventListener("change", onMq);
     return () => {
       cancelAnimationFrame(raf);
+      io.disconnect();
       mq.removeEventListener("change", onMq);
     };
   }, [dir, phase]);

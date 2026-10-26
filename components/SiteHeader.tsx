@@ -6,7 +6,6 @@ import InviteButton from "@/components/InviteButton";
 
 const nav = [
   { href: "#deets", label: "The deets" },
-  { href: "#scene", label: "The scene" },
   { href: "#dress-code", label: "Dress code" },
   { href: "#register", label: "Request" },
 ];

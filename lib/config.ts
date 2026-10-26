@@ -37,19 +37,6 @@ export const site = {
     "and unforgettable memories. Saturday, 31 October 2026, 5:30 PM onwards " +
     "at Omaxe, Rohtak. Invite-only, spots are limited.",
 
-  // "What's the scene?" — short chips. `icon` picks a drawn icon in
-  // components/SceneIcon.tsx (diya, dj, flower, paint, camera, cards, food, dance).
-  scene: [
-    { icon: "diya", label: "Diwali lights & florals" },
-    { icon: "dj", label: "Live DJ & dance floor" },
-    { icon: "flower", label: "DIY diyas" },
-    { icon: "paint", label: "Face painting & pop-ups" },
-    { icon: "camera", label: "Photobooths" },
-    { icon: "cards", label: "Cards & Tambola" },
-    { icon: "food", label: "Golgappa station & food" },
-    { icon: "dance", label: "Great people" },
-  ],
-
   deets: [
     { label: "Date", value: "Saturday, 31 October 2026" },
     { label: "Time", value: "5:30 PM onwards" },

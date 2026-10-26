@@ -6,9 +6,11 @@
   --magenta: #e9227d;
   --royal: #712494;
   --marigold: #fbe212;
-  /* watercolour paper: big soft blotches + fine fibre grain (poster texture) */
-  --wash: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.00625 0.0109375' numOctaves='3' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.02 0 0 0 0 0.3 0 0 0 0.9 -0.4'/></filter><rect width='100%' height='100%' filter='url(%23w)'/></svg>");
-  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.55 0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 0.85 0 0 0 0 0.9 0 0 0 0.09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  /* watercolour paper: big soft blotches + fine fibre grain (poster texture).
+     Pre-rendered tiles (public/tex): the old inline SVG feTurbulence filters
+     were re-rasterised for every tile on scroll, very slow on phones. */
+  --wash: url("/tex/wash.webp");
+  --grain: url("/tex/grain.webp");
 }
 
 ::selection {
@@ -42,15 +44,17 @@ html.lenis body {
     var(--wash),
     radial-gradient(70% 60% at 50% 35%, rgba(255, 70, 150, 0.35), transparent 75%),
     linear-gradient(180deg, #e9227d 0%, #df1c76 100%);
+  background-size: 220px, 640px, auto, auto;
 }
 /* Poster arch purple, same paper feel. */
 .bg-royal-tex {
   background-color: #712494;
   background-image:
     var(--grain),
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.00625 0.0109375' numOctaves='3' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.02 0 0 0 0 0.3 0 0 0 1.1 -0.45'/></filter><rect width='100%' height='100%' filter='url(%23w)'/></svg>"),
+    url("/tex/royal-wash.webp"),
     radial-gradient(60% 55% at 50% 40%, rgba(140, 50, 180, 0.45), transparent 75%),
     linear-gradient(180deg, #712494 0%, #661f88 100%);
+  background-size: 220px, 640px, auto, auto;
 }
 
 /* Hero: the poster's flat hot pink with watercolour wash, soft bokeh. */
@@ -63,6 +67,7 @@ html.lenis body {
     radial-gradient(60% 50% at 0% 40%, rgba(196, 22, 106, 0.35), transparent 70%),
     radial-gradient(60% 50% at 100% 20%, rgba(196, 22, 106, 0.35), transparent 70%),
     linear-gradient(180deg, #e2207a 0%, #e9227d 45%, #e9227d 100%);
+  background-size: 220px, 640px, auto, auto, auto, auto;
 }
 .hero-bokeh {
   background-image:
@@ -77,7 +82,6 @@ html.lenis body {
     radial-gradient(circle at 74% 18%, rgba(255, 220, 160, 0.2) 0 5px, transparent 12px),
     radial-gradient(circle at 14% 84%, rgba(255, 200, 140, 0.18) 0 9px, transparent 20px),
     radial-gradient(40% 30% at 42% 58%, rgba(255, 120, 150, 0.12), transparent 70%);
-  filter: blur(1.5px);
 }
 .hero-floor {
   background: linear-gradient(180deg, rgba(255, 150, 200, 0) 0%, rgba(255, 150, 200, 0.1) 12%, rgba(160, 10, 80, 0.22) 100%);
@@ -95,7 +99,7 @@ html.lenis body {
     @apply inline-flex items-center justify-center gap-2 rounded-full bg-marigold px-7 py-3.5 text-[15px] font-extrabold text-plum shadow-[0_6px_0_#356428,0_10px_30px_rgba(251,226,18,0.3)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#fff05a] active:translate-y-0.5 active:shadow-[0_2px_0_#356428];
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-marigold/80 bg-plum/30 px-6 py-3 text-[15px] font-bold text-marigold backdrop-blur-sm transition-colors duration-200 hover:bg-marigold hover:text-plum;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-marigold/80 bg-plum/30 px-6 py-3 text-[15px] font-bold text-marigold transition-colors duration-200 hover:bg-marigold hover:text-plum;
   }
   /* Poster title: flat lemon yellow with a hard forest-green drop shadow. */
   .gold-text {
@@ -246,11 +250,48 @@ html.lenis body {
   animation: disco-speck 5.5s ease-in-out infinite;
 }
 
-/* Phones: keep only the diya flames moving; pause the rest to save battery. */
-@media (max-width: 639px) {
-  .animate-glow {
+/* Phones/tablets: keep the diya flames and the disco-ball spin; drop the
+   glows, glints, flashes and edge sparkles (dozens of layers repainting). */
+@media (max-width: 1023px) {
+  .animate-glow,
+  .disco-flash,
+  .disco-glint,
+  .disco-halo,
+  .disco-speck,
+  .bd-twinkle,
+  .bd-float {
     animation: none !important;
   }
+  .disco-glint { filter: none; }
+  .bd-twinkle { opacity: 0.55; transform: scale(0.8); }
+  /* Phones: the fine grain tile is invisible at high DPR but costs ~25% of scroll raster. */
+  .bg-poster {
+    background-image: var(--wash),
+      radial-gradient(70% 60% at 50% 35%, rgba(255, 70, 150, 0.35), transparent 75%),
+      linear-gradient(180deg, #e9227d 0%, #df1c76 100%);
+    background-size: 640px, auto, auto;
+  }
+  .bg-royal-tex {
+    background-image: url("/tex/royal-wash.webp"),
+      radial-gradient(60% 55% at 50% 40%, rgba(140, 50, 180, 0.45), transparent 75%),
+      linear-gradient(180deg, #712494 0%, #661f88 100%);
+    background-size: 640px, auto, auto;
+  }
+  .bg-hero {
+    background-image: var(--wash),
+      radial-gradient(48% 46% at 42% 52%, rgba(255, 80, 160, 0.4), transparent 72%),
+      radial-gradient(60% 50% at 0% 40%, rgba(196, 22, 106, 0.35), transparent 70%),
+      radial-gradient(60% 50% at 100% 20%, rgba(196, 22, 106, 0.35), transparent 70%),
+      linear-gradient(180deg, #e2207a 0%, #e9227d 45%, #e9227d 100%);
+    background-size: 640px, auto, auto, auto, auto;
+  }
+}
+/* Sections scrolled out of view pause their animations (components/PauseOffscreen.tsx). */
+.anim-off,
+.anim-off *,
+.anim-off *::before,
+.anim-off *::after {
+  animation-play-state: paused !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -296,7 +337,3 @@ html.lenis body {
   .bd-sway, .bd-twinkle, .bd-float, .bd-glow, .bd-spin { animation: none !important; }
   .bd-twinkle { opacity: 0.6; }
 }
-
-/* ── Scroll reveal (components/Reveal.tsx): visible by default, JS only hides below-the-fold blocks ── */
-.rv-hide { opacity: 0; transform: translateY(var(--rv-y, 22px)); transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--rv-delay, 0s); }
-.rv-hide.rv-in { opacity: 1; transform: none; }
