@@ -59,7 +59,7 @@ export default function Hero() {
       <DiyaCluster uid="dcl" side="left" className="absolute -bottom-2 left-0 z-10 hidden w-[clamp(180px,17vw,290px)] lg:block" />
       <DiyaCluster uid="dcr" side="right" className="absolute -bottom-2 right-0 z-10 hidden w-[clamp(180px,17vw,290px)] lg:block" />
 
-      <div className="relative z-20 mx-auto flex w-full max-w-[1120px] flex-1 flex-col items-center px-5 pb-14 pt-[68px] sm:px-10 sm:pb-20 sm:pt-28 lg:flex-row lg:justify-center lg:gap-[clamp(48px,8vw,130px)] lg:pb-16 lg:pt-[92px]">
+      <div className="relative z-20 mx-auto flex w-full max-w-[1120px] flex-1 flex-col items-center px-5 pb-6 pt-[56px] sm:px-10 sm:pb-12 sm:pt-24 lg:flex-row lg:justify-center lg:gap-[clamp(48px,8vw,130px)] lg:pb-10 lg:pt-[78px]">
         {/* ── Arch card ── */}
         <div className="relative w-full max-w-[400px] sm:max-w-[460px] lg:w-[clamp(390px,31vw,450px)] lg:max-w-none">
           {/* phones / tablets: elephants peek from the arch's top corners */}
@@ -67,7 +67,7 @@ export default function Hero() {
           <AnimatedElephant side="right" sizes="150px" phase={260} className="absolute -right-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-right-24 sm:-top-6 sm:w-[150px] lg:hidden" />
           <Rangoli className="absolute -bottom-[290px] left-1/2 hidden h-[640px] w-[640px] -translate-x-1/2 scale-y-[0.24] lg:block" />
 
-          <div className="relative px-11 pb-[4.4rem] pt-[4.6rem] text-center min-[400px]:px-12 sm:px-16 sm:pb-[5.2rem] sm:pt-[5.6rem] lg:px-14 lg:pb-[3.9rem] lg:pt-[4.4rem]">
+          <div className="relative px-11 pb-[3.5rem] pt-[4rem] text-center min-[400px]:px-12 sm:px-16 sm:pb-[4.6rem] sm:pt-[5rem] lg:px-14 lg:pb-[3.4rem] lg:pt-[4rem]">
             <ArchFrame />
             <Lotus className="absolute left-1/2 top-[3.4%] h-6 w-9 -translate-x-1/2 sm:h-7 sm:w-10" />
             <div className="relative">
@@ -77,8 +77,8 @@ export default function Hero() {
                 <span className="gold-text title-lg -mt-1 block whitespace-nowrap font-display text-[2.6rem] leading-none [-webkit-text-stroke:0.6px_#FBE212] [font-variant:small-caps] min-[400px]:text-[2.85rem] sm:text-[3.9rem] lg:text-[3.45rem] xl:text-[3.65rem]">{e.latinTitle}</span>
                 <span className="sr-only"> — {e.title}</span>
               </h1>
-              <Ornament className="mt-4 sm:mt-5 lg:mt-4" />
-              <div className="mt-3 sm:mt-4">
+              <Ornament className="mt-3 sm:mt-4 lg:mt-3" />
+              <div className="mt-2.5 sm:mt-3">
                 <p className="font-sans text-[1.45rem] font-extrabold uppercase leading-none text-gold drop-shadow-[0_2px_0_rgba(70,8,90,0.5)] sm:text-[1.95rem] lg:text-[1.75rem]">
                   <Ordinal text={e.posterDate} />
                 </p>
@@ -89,11 +89,11 @@ export default function Hero() {
                   <Sparkle className="h-5 w-5 shrink-0 sm:h-7 sm:w-7" />
                 </p>
               </div>
-              <Ornament className="mt-3 sm:mt-4" />
-              <Plaque className="mx-auto mt-4 max-w-[calc(100%-1rem)] sm:mt-5 sm:max-w-[340px] lg:mt-4">
+              <Ornament className="mt-2.5 sm:mt-3" />
+              <Plaque className="mx-auto mt-3 max-w-[calc(100%-1rem)] sm:mt-4 sm:max-w-[340px] lg:mt-3">
                 <p className="font-caps text-[12.5px] font-bold uppercase leading-snug tracking-[0.04em] text-amber sm:text-[14px]">{e.dressLine}</p>
               </Plaque>
-              <p className="mt-4 font-sans text-[13px] font-extrabold uppercase tracking-[0.08em] text-gold sm:text-[15px]">{e.posterNote}</p>
+              <p className="mt-3 font-sans text-[13px] font-extrabold uppercase tracking-[0.08em] text-gold sm:text-[15px]">{e.posterNote}</p>
               <div className="mt-3 flex justify-center sm:mt-4 lg:mt-3">
                 <InviteButton className="min-h-[48px] w-full max-w-[230px] sm:w-auto sm:max-w-none sm:px-8" />
               </div>
@@ -106,7 +106,7 @@ export default function Hero() {
         </div>
 
         {/* ── Countdown ── */}
-        <div className="mt-12 w-full max-w-[400px] sm:mt-16 lg:mt-0 lg:w-[clamp(330px,28vw,410px)] lg:max-w-none">
+        <div className="mt-6 w-full max-w-[320px] sm:mt-10 sm:max-w-[360px] lg:mt-0 lg:w-[clamp(330px,28vw,410px)] lg:max-w-none">
           <Countdown />
         </div>
       </div>

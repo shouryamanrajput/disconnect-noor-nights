@@ -31,8 +31,8 @@ export default function Countdown() {
 
   return (
     <div className="w-full text-center" aria-live="polite">
-      <Lotus className="mx-auto h-6 w-9" />
-      <div className="mt-2 flex items-center justify-center gap-3">
+      <Lotus className="mx-auto hidden h-6 w-9 lg:block" />
+      <div className="flex items-center justify-center gap-3 lg:mt-2">
         <span className="h-px w-8 bg-marigold/80 sm:w-12" />
         <p className="font-sans text-[12px] font-extrabold uppercase tracking-[0.2em] text-cream sm:text-base">{started ? "The party is on" : "Party starts in"}</p>
         <span className="h-px w-8 bg-marigold/80 sm:w-12" />
@@ -40,7 +40,7 @@ export default function Countdown() {
       {started ? (
         <p className="mt-4 font-display text-3xl uppercase text-marigold">See you on the dance floor!</p>
       ) : (
-        <div className="mx-auto mt-4 grid max-w-[400px] grid-cols-4 gap-2 sm:gap-3">
+        <div className="mx-auto mt-3 grid max-w-[400px] grid-cols-4 gap-2 sm:gap-3">
           {(left === null ? parts(0).map((p) => ({ ...p, v: -1 })) : parts(left)).map((p) => (
             <div key={p.l} className="relative aspect-[100/124] drop-shadow-[0_6px_14px_rgba(20,2,40,0.45)]">
               <ArchTile />
@@ -54,7 +54,7 @@ export default function Countdown() {
           ))}
         </div>
       )}
-      <Ornament className="mt-4" />
+      <Ornament className="mt-4 hidden lg:flex" />
     </div>
   );
 }
