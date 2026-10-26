@@ -9,6 +9,7 @@ import WhatsAppIcon from "@/components/WhatsAppIcon";
 import InstagramIcon from "@/components/InstagramIcon";
 import { EnvelopeIcon } from "@/components/Icons";
 import { Diya, Ornament } from "@/components/Decor";
+import FestiveBackdrop from "@/components/FestiveBackdrop";
 
 type Values = {
   name: string;
@@ -203,7 +204,8 @@ export default function RegisterForm() {
 
   return (
     <section id="register" className="bg-poster relative scroll-mt-14 overflow-hidden pb-20 pt-14 sm:pb-24 sm:pt-20">
-      <div className="container-px relative max-w-[760px]">
+      <FestiveBackdrop variant="full" inner={350} />
+      <div className="container-px relative z-10 max-w-[760px]">
         <Reveal>
           {/* elephant pair facing a diya, sitting on the arch */}
           <div aria-hidden className="relative z-10 -mb-6 flex items-end justify-center gap-1 sm:-mb-8 sm:gap-3">

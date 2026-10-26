@@ -2,6 +2,7 @@ import { site } from "@/lib/config";
 import Reveal from "@/components/Reveal";
 import SceneIcon from "@/components/SceneIcon";
 import { Ornament } from "@/components/Decor";
+import FestiveBackdrop from "@/components/FestiveBackdrop";
 
 const icons = [
   "M7 3v3M17 3v3M4 9h16M5 5h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z",
@@ -15,7 +16,8 @@ const icons = [
 export default function Deets() {
   return (
     <section id="deets" className="bg-royal-tex relative scroll-mt-14 overflow-hidden py-6 sm:py-9">
-      <div className="container-px relative max-w-content lg:max-w-[1080px]">
+      <FestiveBackdrop variant="light" inner={550} />
+      <div className="container-px relative z-10 max-w-content lg:max-w-[1080px]">
         <Reveal>
           <div className="text-center">
             <h2 className="gold-text font-display text-[1.75rem] uppercase leading-tight sm:text-[2.4rem]">The deets</h2>

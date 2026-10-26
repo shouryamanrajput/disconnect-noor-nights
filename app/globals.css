@@ -280,3 +280,19 @@ html.lenis body {
   .register-arch { border-radius: 50% 50% 22px 22px / 110px 110px 22px 22px; }
   .register-arch-inner { border-radius: 50% 50% 16px 16px / 102px 102px 16px 16px; }
 }
+
+/* ── Festive backdrop (components/FestiveBackdrop.tsx) ── */
+@keyframes bd-sway { 0%, 100% { transform: rotate(-2.5deg); } 50% { transform: rotate(2.5deg); } }
+@keyframes bd-twinkle { 0%, 100% { opacity: 0.15; transform: scale(0.55) rotate(0deg); } 50% { opacity: 0.85; transform: scale(1) rotate(30deg); } }
+@keyframes bd-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+@keyframes bd-glow { 0%, 100% { opacity: 0.55; } 50% { opacity: 1; } }
+@keyframes bd-spin { to { transform: translateX(-50%) rotate(360deg); } }
+.bd-sway { transform-origin: 50% 0; animation: bd-sway 6s ease-in-out infinite; }
+.bd-twinkle { animation: bd-twinkle 3.2s ease-in-out infinite; }
+.bd-float { animation: bd-float 9s ease-in-out infinite; }
+.bd-glow { animation: bd-glow 3s ease-in-out infinite; }
+.bd-spin { transform: translateX(-50%); animation: bd-spin 180s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .bd-sway, .bd-twinkle, .bd-float, .bd-glow, .bd-spin { animation: none !important; }
+  .bd-twinkle { opacity: 0.6; }
+}
