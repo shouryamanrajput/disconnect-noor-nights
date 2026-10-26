@@ -34,7 +34,7 @@ function SessionTimer({ onExpire }: { onExpire: () => void }) {
   const warn = sec <= 120;
   const mmss = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
   return (
-    <p data-session-timer className={`mx-auto mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold ${warn ? "bg-[#FFE27A] text-plum" : "bg-night/40 text-cream/80"}`} role={warn ? "alert" : undefined}>
+    <p data-session-timer className={`mx-auto mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[12px] sm:text-[13px] font-semibold ${warn ? "bg-[#FFE27A] text-plum" : "bg-night/40 text-cream/80"}`} role={warn ? "alert" : undefined}>
       <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5 fill-current"><path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm1 4v4.6l3 1.8-.8 1.3L9 11.4V6h2Z" /></svg>
       Session expires in <span className="font-mono tabular-nums">{mmss}</span>
       {warn && <span className="sr-only">. Less than 2 minutes left, please upload soon.</span>}
@@ -129,17 +129,17 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart, onExpire
 
   return (
     <form noValidate onSubmit={onSubmit} onPointerDown={touchSession} onKeyDown={touchSession} className="mx-auto mt-7 max-w-[460px] text-center" aria-labelledby="pay-title">
-      <p className="text-[14px] text-cream/90">
+      <p className="text-[13px] sm:text-[14px] text-cream/90">
         Thanks, {reg.name.split(" ")[0]}! Your details are in. Registration ID{" "}
-        <span className="whitespace-nowrap rounded-md bg-night/50 px-1.5 py-0.5 font-mono text-[13.5px] font-bold text-marigold">{reg.regId}</span>
+        <span className="whitespace-nowrap rounded-md bg-night/50 px-1.5 py-0.5 font-mono text-[12.5px] sm:text-[13.5px] font-bold text-marigold">{reg.regId}</span>
       </p>
       <SessionTimer onExpire={onExpire} />
-      <h3 id="pay-title" className="gold-text title-lg mt-5 font-display text-[2rem] uppercase leading-tight sm:text-[2.4rem]">{p.title}</h3>
-      <p className="mt-1 font-sans text-[2rem] font-extrabold leading-none text-cream">{p.amount}</p>
-      <p className="mt-2 text-[14.5px] text-cream/90">
+      <h3 id="pay-title" className="gold-text title-lg mt-4 font-display text-[1.7rem] uppercase leading-tight sm:mt-5 sm:text-[2.4rem]">{p.title}</h3>
+      <p className="mt-1 font-sans text-[1.75rem] font-extrabold sm:text-[2rem] leading-none text-cream">{p.amount}</p>
+      <p className="mt-2 text-[13.5px] sm:text-[14.5px] text-cream/90">
         Paying to <span className="font-extrabold tracking-wide text-marigold">{p.payeeName}</span>
       </p>
-      <p className="mx-auto mt-3 max-w-[400px] text-[14.5px] leading-relaxed text-cream/90">{p.body}</p>
+      <p className="mx-auto mt-3 max-w-[400px] text-[13.5px] sm:text-[14.5px] leading-relaxed text-cream/90">{p.body}</p>
 
       <div className="mx-auto mt-5 w-[220px] rounded-2xl bg-white p-3 sm:w-[260px] shadow-[0_10px_30px_rgba(20,2,40,0.35)]">
         {qrOk ? (
@@ -151,13 +151,13 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart, onExpire
               <svg viewBox="0 0 48 48" aria-hidden className="mx-auto h-12 w-12 fill-plum/70">
                 <path d="M4 4h16v16H4V4Zm4 4v8h8V8H8Zm20-4h16v16H28V4Zm4 4v8h8V8h-8ZM4 28h16v16H4V28Zm4 4v8h8v-8H8Zm20-4h6v6h-6v-6Zm10 0h6v6h-6v-6Zm-10 10h6v6h-6v-6Zm10 0h6v6h-6v-6ZM11 11h2v2h-2v-2Zm24 0h2v2h-2v-2ZM11 35h2v2h-2v-2Z" />
               </svg>
-              <p className="mt-2 text-[14px] font-bold">Payment QR coming soon</p>
-              <p className="mt-1 text-[12.5px] leading-snug text-plum/75">DM us on Instagram and we’ll share the payment details.</p>
+              <p className="mt-2 text-[13px] sm:text-[14px] font-bold">Payment QR coming soon</p>
+              <p className="mt-1 text-[11.5px] sm:text-[12.5px] leading-snug text-plum/75">DM us on Instagram and we’ll share the payment details.</p>
             </div>
           </div>
         )}
       </div>
-      {qrOk && <p className="mt-3 text-[14px] font-bold text-cream">Scan with any UPI app</p>}
+      {qrOk && <p className="mt-3 text-[13px] sm:text-[14px] font-bold text-cream">Scan with any UPI app</p>}
 
       {p.upiId && (
         <div className="mt-4 flex flex-col items-center gap-3">
@@ -165,11 +165,11 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart, onExpire
             Pay {p.amount} with UPI app
           </a>
           <div className="flex max-w-full flex-col items-center">
-            <span className="mb-1 text-[12.5px] font-semibold uppercase tracking-[0.08em] text-cream/75 sm:hidden">or pay to UPI ID</span>
+            <span className="mb-1 text-[11.5px] sm:text-[12.5px] font-semibold uppercase tracking-[0.08em] text-cream/75 sm:hidden">or pay to UPI ID</span>
             <div className="flex max-w-full items-center gap-2 rounded-full border-2 border-marigold/55 bg-night/30 py-1 pl-4 pr-1">
-              <span className="hidden shrink-0 text-[13px] text-cream/80 sm:inline">UPI ID</span>
-              <span className="min-w-0 select-all break-all font-sans text-[15px] font-bold tracking-tight text-marigold">{p.upiId}</span>
-              <button type="button" onClick={copyUpi} aria-label={copied ? "UPI ID copied" : "Copy UPI ID"} className="min-h-[44px] shrink-0 rounded-full bg-marigold px-4 text-[13.5px] font-extrabold text-plum">
+              <span className="hidden shrink-0 text-[12px] sm:text-[13px] text-cream/80 sm:inline">UPI ID</span>
+              <span className="min-w-0 select-all break-all font-sans text-[14px] sm:text-[15px] font-bold tracking-tight text-marigold">{p.upiId}</span>
+              <button type="button" onClick={copyUpi} aria-label={copied ? "UPI ID copied" : "Copy UPI ID"} className="min-h-[44px] shrink-0 rounded-full bg-marigold px-4 text-[12.5px] sm:text-[13.5px] font-extrabold text-plum">
                 {copied ? "Copied!" : "Copy"}
               </button>
             </div>
@@ -177,12 +177,12 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart, onExpire
         </div>
       )}
 
-      <p className="mx-auto mt-6 max-w-[400px] rounded-xl bg-night/40 px-4 py-3 text-[14px] font-semibold leading-snug text-cream">
+      <p className="mx-auto mt-6 max-w-[400px] rounded-xl bg-night/40 px-4 py-3 text-[13px] sm:text-[14px] font-semibold leading-snug text-cream">
         After paying, take or keep a screenshot of the payment confirmation and upload it below.
       </p>
 
       <div className="mt-6 text-left">
-        <p className="flex items-center font-sans text-[15.5px] font-bold text-cream">
+        <p className="flex items-center font-sans text-[14px] sm:text-[15.5px] font-bold text-cream">
           <span aria-hidden className="mr-2 inline-grid h-7 w-7 shrink-0 place-items-center rounded-full bg-marigold text-[12px] font-extrabold text-plum">↑</span>
           Upload your payment screenshot
         </p>
@@ -196,25 +196,25 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart, onExpire
               <div className="grid h-28 w-20 place-items-center rounded-lg bg-cream/10 text-[12px] font-bold text-cream/80">HEIC</div>
             )}
             <div className="min-w-0 flex-1">
-              <p className="text-[14px] font-bold text-cream">Screenshot ready</p>
-              <p className="text-[13px] text-cream/75">{fmtKB(shot.bytes)}{shot.width ? ` · ${shot.width}×${shot.height}` : ""}</p>
-              <label htmlFor="pay-file" className="mt-2 inline-flex min-h-[44px] cursor-pointer items-center rounded-full border-2 border-marigold/70 px-4 text-[13.5px] font-bold text-marigold peer-focus-visible:ring-4">Change</label>
+              <p className="text-[13px] sm:text-[14px] font-bold text-cream">Screenshot ready</p>
+              <p className="text-[12px] sm:text-[13px] text-cream/75">{fmtKB(shot.bytes)}{shot.width ? ` · ${shot.width}×${shot.height}` : ""}</p>
+              <label htmlFor="pay-file" className="mt-2 inline-flex min-h-[44px] cursor-pointer items-center rounded-full border-2 border-marigold/70 px-4 text-[12.5px] sm:text-[13.5px] font-bold text-marigold peer-focus-visible:ring-4">Change</label>
             </div>
           </div>
         ) : (
-          <label htmlFor="pay-file" className={`mt-3 flex min-h-[64px] cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 text-[15px] font-bold transition-colors hover:bg-white/5 peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${error ? "border-[#FF6FA3] text-cream" : "border-marigold/70 text-marigold"}`}>
+          <label htmlFor="pay-file" className={`mt-3 flex min-h-[64px] cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 text-[14px] sm:text-[15px] font-bold transition-colors hover:bg-white/5 peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${error ? "border-[#FF6FA3] text-cream" : "border-marigold/70 text-marigold"}`}>
             {busy === "reading" ? "Preparing image…" : "Choose screenshot (JPG, PNG, WebP, HEIC)"}
           </label>
         )}
-        <p id="pay-hint" className="mt-2 text-[13px] text-cream/70">We shrink it on your phone before sending, so it uploads fast.</p>
+        <p id="pay-hint" className="mt-2 text-[12px] sm:text-[13px] text-cream/70">We shrink it on your phone before sending, so it uploads fast.</p>
       </div>
 
-      <div aria-live="polite">{error && <p id="pay-err" className="mt-4 text-[14px] font-bold text-[#FFE27A]">{error}</p>}</div>
+      <div aria-live="polite">{error && <p id="pay-err" className="mt-4 text-[13px] sm:text-[14px] font-bold text-[#FFE27A]">{error}</p>}</div>
 
-      <button ref={submitRef} type="submit" disabled={busy !== ""} className="btn-primary btn-spark mt-6 min-h-[56px] w-full text-lg disabled:cursor-wait disabled:opacity-80">
+      <button ref={submitRef} type="submit" disabled={busy !== ""} className="btn-primary btn-spark mt-6 min-h-[50px] w-full text-[15px] sm:min-h-[56px] sm:text-lg disabled:cursor-wait disabled:opacity-80">
         {busy === "sending" ? "Uploading…" : "Submit payment screenshot"}
       </button>
-      <button type="button" onClick={onRestart} className="mt-3 min-h-[44px] px-3 text-[13.5px] font-semibold text-cream/75 underline decoration-cream/30 underline-offset-4 hover:text-cream">
+      <button type="button" onClick={onRestart} className="mt-3 min-h-[44px] px-3 text-[12.5px] sm:text-[13.5px] font-semibold text-cream/75 underline decoration-cream/30 underline-offset-4 hover:text-cream">
         Not you? Start over
       </button>
     </form>

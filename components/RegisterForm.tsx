@@ -85,7 +85,7 @@ function Steps({ step }: { step: 1 | 2 | 3 }) {
             <span aria-hidden className={`grid h-6 w-6 place-items-center rounded-full border-2 font-sans text-[12px] sm:h-8 sm:w-8 sm:text-[13.5px] font-extrabold ${done || current ? "border-marigold bg-marigold text-plum" : "border-cream/40 text-cream/80"}`}>
               {done ? "✓" : n}
             </span>
-            <span className={`font-sans text-[13px] font-bold sm:text-[14px] ${current ? "text-marigold" : "text-cream/85"}`}>
+            <span className={`font-sans text-[12px] font-bold sm:text-[14px] ${current ? "text-marigold" : "text-cream/85"}`}>
               {label}
               <span className="sr-only">{done ? " (done)" : current ? " (current step)" : ""}</span>
             </span>
@@ -116,29 +116,29 @@ function buildBody(v: Values, company: string, regId: string) {
 
 /* ── small building blocks ─────────────────────────────── */
 function Num({ n }: { n: string }) {
-  return <span aria-hidden className="mr-1.5 inline-grid h-5 w-5 shrink-0 place-items-center rounded-full bg-marigold font-sans text-[10px] sm:mr-2 sm:h-6 sm:w-6 sm:text-[11px] font-extrabold text-plum">{n}</span>;
+  return <span aria-hidden className="mr-1.5 inline-grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-marigold font-sans text-[10px] sm:mr-2 sm:h-6 sm:w-6 sm:text-[11px] font-extrabold text-plum">{n}</span>;
 }
 function ErrorText({ id, msg }: { id: string; msg?: string }) {
   if (!msg) return null;
   return (
-    <p id={id} className="mt-2 flex items-start gap-1.5 text-[13.5px] font-semibold text-[#FFE27A]">
-      <svg viewBox="0 0 20 20" aria-hidden className="mt-[1px] h-4 w-4 shrink-0 fill-[#FFE27A]"><path d="M10 1.5 19 18H1L10 1.5Zm-1 6v5h2v-5H9Zm0 6.5v2h2v-2H9Z" /></svg>
+    <p id={id} className="mt-1.5 flex items-start gap-1.5 text-[12px] font-semibold sm:mt-2 sm:text-[13.5px] text-[#FFE27A]">
+      <svg viewBox="0 0 20 20" aria-hidden className="mt-[1px] h-3.5 w-3.5 shrink-0 fill-[#FFE27A] sm:h-4 sm:w-4"><path d="M10 1.5 19 18H1L10 1.5Zm-1 6v5h2v-5H9Zm0 6.5v2h2v-2H9Z" /></svg>
       {msg}
     </p>
   );
 }
 const inputBase =
-  "block w-full h-12 sm:h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
+  "block w-full h-12 sm:h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
 const inputCls = (bad?: string) => `${inputBase} ${bad ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`;
 
 function Field({ id, n, label, hint, error, children }: { id: string; n?: string; label: string; hint?: string; error?: string; children: ReactNode }) {
   return (
     <div>
-      <label htmlFor={id} className="flex items-center font-sans text-[15px] font-semibold leading-snug text-cream sm:text-base">
-        {n ? <Num n={n} /> : <span aria-hidden className="mr-1.5 inline-block h-5 w-5 shrink-0 sm:mr-2 sm:h-6 sm:w-6" />}
+      <label htmlFor={id} className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream sm:text-base">
+        {n ? <Num n={n} /> : <span aria-hidden className="mr-1.5 inline-block h-[18px] w-[18px] shrink-0 sm:mr-2 sm:h-6 sm:w-6" />}
         {label}
       </label>
-      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-[26px] text-[12.5px] sm:pl-8 text-cream/70">{hint}</p>}
+      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-6 text-[11.5px] sm:pl-8 sm:text-[12.5px] text-cream/70">{hint}</p>}
       <div className="mt-1.5 sm:mt-2">{children}</div>
       <ErrorText id={`${id}-err`} msg={error} />
     </div>
@@ -148,7 +148,7 @@ function Field({ id, n, label, hint, error, children }: { id: string; n?: string
 function Pills({ name, n, legend, options, value, onChange, error, grid = false }: { name: keyof Values; n: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; grid?: boolean }) {
   return (
     <fieldset id={`rf-${name}`} tabIndex={-1} aria-invalid={!!error} aria-describedby={error ? `rf-${name}-err` : undefined} className="outline-none">
-      <legend className="flex items-center font-sans text-[15px] font-semibold leading-snug text-cream sm:text-base">
+      <legend className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream sm:text-base">
         <Num n={n} />
         {legend}
       </legend>
@@ -160,7 +160,7 @@ function Pills({ name, n, legend, options, value, onChange, error, grid = false 
               <input id={id} type="radio" name={name} value={o} checked={value === o} onChange={() => onChange(o)} className="peer sr-only" />
               <label
                 htmlFor={id}
-                className={`flex min-h-[40px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] px-3.5 py-1.5 text-center font-sans text-[14px] font-semibold leading-tight transition-colors peer-checked:border-marigold peer-checked:bg-marigold peer-checked:text-plum peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${
+                className={`flex min-h-[40px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] px-3 py-1.5 text-center font-sans text-[13px] font-semibold leading-tight sm:px-3.5 sm:text-[14px] transition-colors peer-checked:border-marigold peer-checked:bg-marigold peer-checked:text-plum peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${
                   error ? "border-[#FF6FA3] text-cream" : "border-marigold/55 text-cream hover:border-marigold hover:bg-white/5"
                 }`}
               >
@@ -349,7 +349,7 @@ export default function RegisterForm() {
               ) : (
                 <form noValidate onSubmit={onSubmit} className="mx-auto mt-4 max-w-[560px] space-y-4 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
                   {notice && (
-                    <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[14.5px] font-bold">
+                    <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[13px] font-bold sm:text-[14.5px]">
                       {notice}
                     </p>
                   )}
@@ -363,7 +363,7 @@ export default function RegisterForm() {
                     <Field id="rf-mobile" label="Mobile number" error={errors.mobile}>
                       <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.mobile ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                         <span aria-hidden className="grid shrink-0 place-items-center border-r-2 border-plum/15 bg-marigold/90 px-3 font-sans text-[16px] font-extrabold text-plum">+91</span>
-                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-11 w-full min-w-0 bg-transparent px-3 py-2 sm:h-10 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
+                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-11 w-full min-w-0 bg-transparent px-3 py-2 sm:h-10 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
                       </div>
                     </Field>
                     <Field id="rf-email" label="Email" error={errors.email}>
@@ -374,7 +374,7 @@ export default function RegisterForm() {
                   <Field id="rf-instagram" n="03" label="What’s your Instagram handle?" hint="Optional, but useful for event communication" error={errors.instagram}>
                     <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.instagram ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                       <span aria-hidden className="grid shrink-0 place-items-center pl-3.5 font-sans text-[16px] font-extrabold text-plum/60">@</span>
-                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-11 w-full min-w-0 bg-transparent py-2 pl-1 sm:h-10 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
+                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-11 w-full min-w-0 bg-transparent py-2 pl-1 sm:h-10 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
                     </div>
                   </Field>
 
@@ -397,17 +397,17 @@ export default function RegisterForm() {
 
                   <div className="pt-0.5 sm:pt-1">
                     {tried && errCount > 0 && (
-                      <p role="alert" className="mb-3 text-center text-[14px] font-bold text-[#FFE27A]">
+                      <p role="alert" className="mb-3 text-center text-[12.5px] font-bold text-[#FFE27A] sm:text-[14px]">
                         Please fix the {errCount === 1 ? "highlighted field" : `${errCount} highlighted fields`} above.
                       </p>
                     )}
-                    <button ref={submitRef} type="submit" disabled={status === "sending"} className="btn-primary btn-spark min-h-[50px] w-full py-3 text-[16px] disabled:cursor-wait disabled:opacity-80 sm:min-h-[56px] sm:text-lg">
+                    <button ref={submitRef} type="submit" disabled={status === "sending"} className="btn-primary btn-spark min-h-[50px] w-full py-3 text-[15px] disabled:cursor-wait disabled:opacity-80 sm:min-h-[56px] sm:text-lg">
                       <EnvelopeIcon className="h-[18px] w-[18px] shrink-0 text-plum" />
                       {status === "sending" ? "Sending…" : site.ctas.primary}
                     </button>
                     <div aria-live="polite">
-                      {status === "soon" && <p className="coral-pill mt-5 rounded-2xl px-4 py-3 text-center font-sans text-[14.5px] font-bold">{r.soonMessage}</p>}
-                      {status === "error" && <p className="mt-4 text-center text-[14px] font-bold text-[#FFE27A]">Couldn’t send just now — check your connection and try again, or DM us on Instagram.</p>}
+                      {status === "soon" && <p className="coral-pill mt-5 rounded-2xl px-4 py-3 text-center font-sans text-[13px] font-bold sm:text-[14.5px]">{r.soonMessage}</p>}
+                      {status === "error" && <p className="mt-4 text-center text-[12.5px] font-bold text-[#FFE27A] sm:text-[14px]">Couldn’t send just now — check your connection and try again, or DM us on Instagram.</p>}
                     </div>
                   </div>
                   {/* honeypot: hidden from people and screen readers; bots tend to fill it */}
@@ -418,12 +418,12 @@ export default function RegisterForm() {
                 </form>
               )}
 
-              <p id="rf-note" className="mx-auto mt-4 max-w-[460px] text-balance text-center text-[12.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
+              <p id="rf-note" className="mx-auto mt-4 max-w-[460px] text-balance text-center text-[11.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
               <div className="mt-1 sm:mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0 font-semibold sm:gap-x-6">
-                <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
+                <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[14px] text-marigold sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <WhatsAppIcon className="h-5 w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
                 </a>
-                <a href={site.links.instagramDM} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
+                <a href={site.links.instagramDM} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[14px] text-marigold sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <InstagramIcon className="h-5 w-5" /> <span className="sm:hidden">Instagram DM</span><span className="hidden sm:inline">{site.ctas.instagram}</span>
                 </a>
               </div>
