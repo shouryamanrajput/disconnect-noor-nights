@@ -115,8 +115,24 @@ function buildBody(v: Values, company: string, regId: string) {
 }
 
 /* ── small building blocks ─────────────────────────────── */
-function Num({ n }: { n: string }) {
-  return <span aria-hidden className="mr-1.5 inline-grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-marigold font-sans text-[10px] sm:mr-2 sm:h-6 sm:w-6 sm:text-[11px] font-extrabold text-plum">{n}</span>;
+/* Mobile shows an icon in each badge, tablet/desktop keep the numbers. */
+const ICONS: Record<string, string> = {
+  person: "M10 10a3.6 3.6 0 1 0 0-7.2 3.6 3.6 0 0 0 0 7.2Zm0 1.8c-3.4 0-6.6 1.7-6.6 4.2V18h13.2v-2c0-2.5-3.2-4.2-6.6-4.2Z",
+  group: "M7 9.4a2.9 2.9 0 1 0 0-5.8 2.9 2.9 0 0 0 0 5.8Zm6.6 0a2.4 2.4 0 1 0 0-4.8 2.4 2.4 0 0 0 0 4.8ZM7 10.8c-2.8 0-5.4 1.4-5.4 3.4v1.7h10.8v-1.7c0-2-2.6-3.4-5.4-3.4Zm6.6.4c-.6 0-1.1.1-1.6.2 1.1.8 1.8 1.8 1.8 3v1.5h4.6v-1.5c0-1.8-2.2-3.2-4.8-3.2Z",
+  phone: "M5.6 2.4 8 2l1.4 3.6-1.7 1.3a9.4 9.4 0 0 0 5.4 5.4l1.3-1.7L18 12l-.4 2.4c-.1.9-.9 1.6-1.8 1.6C9 16 4 11 4 4.2c0-.9.7-1.7 1.6-1.8Z",
+  mail: "M3 4.5h14c.8 0 1.5.7 1.5 1.5v8c0 .8-.7 1.5-1.5 1.5H3c-.8 0-1.5-.7-1.5-1.5V6c0-.8.7-1.5 1.5-1.5Zm.4 1.8 6.6 4.6 6.6-4.6H3.4Z",
+  insta: "M6.5 2h7A4.5 4.5 0 0 1 18 6.5v7a4.5 4.5 0 0 1-4.5 4.5h-7A4.5 4.5 0 0 1 2 13.5v-7A4.5 4.5 0 0 1 6.5 2Zm0 1.8a2.7 2.7 0 0 0-2.7 2.7v7a2.7 2.7 0 0 0 2.7 2.7h7a2.7 2.7 0 0 0 2.7-2.7v-7a2.7 2.7 0 0 0-2.7-2.7h-7ZM10 6a4 4 0 1 1 0 8 4 4 0 0 1 0-8Zm0 1.8a2.2 2.2 0 1 0 0 4.4 2.2 2.2 0 0 0 0-4.4Zm4.3-2.9a1 1 0 1 1 0 2 1 1 0 0 1 0-2Z",
+  megaphone: "M16 3v13l-5.2-3H8.6l.9 4H7.3l-1-4H4.5A2.5 2.5 0 0 1 2 10.5v-2A2.5 2.5 0 0 1 4.5 6h6.3L16 3Zm1.6 4.6a2.2 2.2 0 0 1 0 3.8V7.6Z",
+  sparkle: "M10 1.5 11.8 7l5.7 1.9-5.7 1.9L10 16.4l-1.8-5.6-5.7-1.9L8.2 7 10 1.5Zm5.6 10.6.8 2.1 2.1.8-2.1.8-.8 2.1-.8-2.1-2.1-.8 2.1-.8.8-2.1Z",
+  chat: "M4 3h12a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2H9l-4 3.5v-3.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Zm2 5.2a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm4 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Zm4 0a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z",
+};
+function Num({ n, icon }: { n?: string; icon: string }) {
+  return (
+    <span aria-hidden className={`mr-1.5 inline-grid h-[18px] w-[18px] shrink-0 place-items-center max-sm:self-start rounded-full bg-marigold font-sans text-[10px] font-extrabold text-plum sm:mr-2 sm:h-6 sm:w-6 sm:text-[11px] ${n ? "" : "sm:bg-transparent"}`}>
+      <svg viewBox="0 0 20 20" className="h-[11px] w-[11px] fill-plum sm:hidden"><path d={ICONS[icon]} /></svg>
+      {n && <span className="hidden sm:inline">{n}</span>}
+    </span>
+  );
 }
 function ErrorText({ id, msg }: { id: string; msg?: string }) {
   if (!msg) return null;
@@ -128,14 +144,14 @@ function ErrorText({ id, msg }: { id: string; msg?: string }) {
   );
 }
 const inputBase =
-  "block w-full h-12 sm:h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
+  "block w-full h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
 const inputCls = (bad?: string) => `${inputBase} ${bad ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`;
 
-function Field({ id, n, label, hint, error, children }: { id: string; n?: string; label: string; hint?: string; error?: string; children: ReactNode }) {
+function Field({ id, n, icon, label, hint, error, children }: { id: string; n?: string; icon: string; label: string; hint?: string; error?: string; children: ReactNode }) {
   return (
     <div>
-      <label htmlFor={id} className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream sm:text-base">
-        {n ? <Num n={n} /> : <span aria-hidden className="mr-1.5 inline-block h-[18px] w-[18px] shrink-0 sm:mr-2 sm:h-6 sm:w-6" />}
+      <label htmlFor={id} className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream max-sm:font-medium sm:text-base">
+        <Num n={n} icon={icon} />
         {label}
       </label>
       {hint && <p id={`${id}-hint`} className="mt-0.5 pl-6 text-[11.5px] sm:pl-8 sm:text-[12.5px] text-cream/70">{hint}</p>}
@@ -145,11 +161,11 @@ function Field({ id, n, label, hint, error, children }: { id: string; n?: string
   );
 }
 
-function Pills({ name, n, legend, options, value, onChange, error, grid = false }: { name: keyof Values; n: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; grid?: boolean }) {
+function Pills({ name, n, icon, legend, options, value, onChange, error, grid = false }: { name: keyof Values; n: string; icon: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; grid?: boolean }) {
   return (
     <fieldset id={`rf-${name}`} tabIndex={-1} aria-invalid={!!error} aria-describedby={error ? `rf-${name}-err` : undefined} className="outline-none">
-      <legend className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream sm:text-base">
-        <Num n={n} />
+      <legend className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream max-sm:font-medium sm:text-base">
+        <Num n={n} icon={icon} />
         {legend}
       </legend>
       <div className={`mt-1.5 sm:mt-2 ${grid ? "grid grid-cols-2 gap-1.5 min-[360px]:grid-cols-4 sm:gap-2 [&_label]:px-2 sm:[&_label]:px-3.5" : "flex flex-wrap gap-1.5 sm:gap-2"}`}>
@@ -330,7 +346,7 @@ export default function RegisterForm() {
             <div aria-hidden className="register-arch-inner pointer-events-none absolute inset-2.5 border-2 border-marigold/70 sm:inset-4" />
             <div className="relative">
               <div className="text-center">
-                <h2 className="gold-text title-lg font-display text-[1.9rem] uppercase leading-tight max-[359px]:text-[1.6rem] sm:text-[3.4rem]">{r.heading}</h2>
+                <h2 className="gold-text title-lg font-display text-[1.65rem] uppercase leading-tight max-[359px]:text-[1.45rem] sm:text-[3.4rem]">{r.heading}</h2>
                 <Ornament className="mt-1 max-sm:gap-2 max-sm:[&>span]:w-10 max-sm:[&_svg]:h-4 max-sm:[&_svg]:w-6 sm:mt-3" />
                 <p className="mt-1.5 font-sans text-[12px] font-bold uppercase tracking-[0.06em] text-gold max-sm:leading-snug sm:mt-3 sm:text-[14.5px] sm:tracking-[0.08em]">{r.subline}</p>
               </div>
@@ -347,39 +363,39 @@ export default function RegisterForm() {
                   {reg && <p className="mt-3 text-[14px] text-cream/85">Registration ID <span className="font-mono font-bold text-marigold">{reg.regId}</span>. Keep it handy.</p>}
                 </div>
               ) : (
-                <form noValidate onSubmit={onSubmit} className="mx-auto mt-4 max-w-[560px] space-y-4 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
+                <form noValidate onSubmit={onSubmit} className="mx-auto mt-4 max-w-[560px] space-y-3.5 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
                   {notice && (
                     <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[13px] font-bold sm:text-[14.5px]">
                       {notice}
                     </p>
                   )}
-                  <Field id="rf-name" n="01" label="What’s your name?" error={errors.name}>
+                  <Field id="rf-name" n="01" icon="person" label="What’s your name?" error={errors.name}>
                     <input id="rf-name" name="name" type="text" autoComplete="name" required aria-required aria-invalid={!!errors.name} aria-describedby={desc("name")} value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Your full name" maxLength={80} className={inputCls(errors.name)} />
                   </Field>
 
-                  <Pills name="ageGroup" n="02" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} grid />
+                  <Pills name="ageGroup" n="02" icon="group" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} grid />
 
-                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
-                    <Field id="rf-mobile" label="Mobile number" error={errors.mobile}>
+                  <div className="grid gap-3.5 sm:grid-cols-2 sm:gap-5">
+                    <Field id="rf-mobile" icon="phone" label="Mobile number" error={errors.mobile}>
                       <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.mobile ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                         <span aria-hidden className="grid shrink-0 place-items-center border-r-2 border-plum/15 bg-marigold/90 px-3 font-sans text-[16px] font-extrabold text-plum">+91</span>
-                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-11 w-full min-w-0 bg-transparent px-3 py-2 sm:h-10 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
+                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-10 w-full min-w-0 bg-transparent px-3 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
                       </div>
                     </Field>
-                    <Field id="rf-email" label="Email" error={errors.email}>
+                    <Field id="rf-email" icon="mail" label="Email" error={errors.email}>
                       <input id="rf-email" name="email" type="email" inputMode="email" autoComplete="email" required aria-required aria-invalid={!!errors.email} aria-describedby={desc("email")} value={v.email} onChange={(e) => set("email", e.target.value)} placeholder="you@example.com" maxLength={120} className={inputCls(errors.email)} />
                     </Field>
                   </div>
 
-                  <Field id="rf-instagram" n="03" label="What’s your Instagram handle?" hint="Optional, but useful for event communication" error={errors.instagram}>
+                  <Field id="rf-instagram" n="03" icon="insta" label="What’s your Instagram handle?" hint="Optional, but useful for event communication" error={errors.instagram}>
                     <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.instagram ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                       <span aria-hidden className="grid shrink-0 place-items-center pl-3.5 font-sans text-[16px] font-extrabold text-plum/60">@</span>
-                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-11 w-full min-w-0 bg-transparent py-2 pl-1 sm:h-10 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
+                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-10 w-full min-w-0 bg-transparent py-2 pl-1 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
                     </div>
                   </Field>
 
                   <div>
-                    <Pills name="heardFrom" n="04" legend="How did you hear about Disconnect?" options={f.heardFrom} value={v.heardFrom} onChange={(x) => set("heardFrom", x)} error={errors.heardFrom} />
+                    <Pills name="heardFrom" n="04" icon="megaphone" legend="How did you hear about Disconnect?" options={f.heardFrom} value={v.heardFrom} onChange={(x) => set("heardFrom", x)} error={errors.heardFrom} />
                     {v.heardFrom === "Other" && (
                       <div className="mt-3">
                         <label htmlFor="rf-heardFromOther" className="sr-only">Where did you hear about Disconnect?</label>
@@ -389,11 +405,11 @@ export default function RegisterForm() {
                     )}
                   </div>
 
-                  <Field id="rf-why" n="05" label="What made you want to join our Diwali party?" error={errors.why}>
+                  <Field id="rf-why" n="05" icon="sparkle" label="What made you want to join our Diwali party?" error={errors.why}>
                     <input id="rf-why" name="why" type="text" aria-describedby={desc("why")} value={v.why} onChange={(e) => set("why", e.target.value)} placeholder="Keep it casual" maxLength={200} className={inputCls(errors.why)} />
                   </Field>
 
-                  <Pills name="comfortable" n="06" legend="Are you comfortable attending a social event where you may not know everyone?" options={f.comfortable} value={v.comfortable} onChange={(x) => set("comfortable", x)} error={errors.comfortable} />
+                  <Pills name="comfortable" n="06" icon="chat" legend="Are you comfortable attending a social event where you may not know everyone?" options={f.comfortable} value={v.comfortable} onChange={(x) => set("comfortable", x)} error={errors.comfortable} />
 
                   <div className="pt-0.5 sm:pt-1">
                     {tried && errCount > 0 && (
@@ -419,10 +435,11 @@ export default function RegisterForm() {
               )}
 
               <p id="rf-note" className="mx-auto mt-4 max-w-[460px] text-balance text-center text-[11.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
-              <div className="mt-1 sm:mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0 font-semibold sm:gap-x-6">
+              <div className="mt-1 sm:mt-2 flex flex-wrap items-center justify-center gap-x-3 max-sm:flex-nowrap max-sm:gap-x-1 gap-y-0 font-semibold sm:gap-x-6">
                 <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[14px] text-marigold sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <WhatsAppIcon className="h-5 w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
                 </a>
+                <span aria-hidden className="h-4 w-px bg-marigold/40 sm:hidden" />
                 <a href={site.links.instagramDM} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[14px] text-marigold sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <InstagramIcon className="h-5 w-5" /> <span className="sm:hidden">Instagram DM</span><span className="hidden sm:inline">{site.ctas.instagram}</span>
                 </a>
