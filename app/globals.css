@@ -250,41 +250,19 @@ html.lenis body {
   animation: disco-speck 5.5s ease-in-out infinite;
 }
 
-/* Phones/tablets: keep the diya flames and the disco-ball spin; drop the
-   glows, glints, flashes and edge sparkles (dozens of layers repainting). */
+/* Phones/tablets: all the desktop decor, with lighter motion — transform and
+   opacity only (no animated filters/shadows), slower loops, fewer pieces
+   per disco ball (.disco-lite: 5 bands, 1 glint, 1 flash, no specks). */
+@keyframes glow-m { 0%, 100% { opacity: 0.6; } 50% { opacity: 0.95; } }
 @media (max-width: 1023px) {
-  .animate-glow,
-  .disco-flash,
-  .disco-glint,
-  .disco-halo,
-  .disco-speck,
-  .bd-twinkle,
-  .bd-float {
-    animation: none !important;
-  }
-  .disco-glint { filter: none; }
-  .bd-twinkle { opacity: 0.55; transform: scale(0.8); }
-  /* Phones: the fine grain tile is invisible at high DPR but costs ~25% of scroll raster. */
-  .bg-poster {
-    background-image: var(--wash),
-      radial-gradient(70% 60% at 50% 35%, rgba(255, 70, 150, 0.35), transparent 75%),
-      linear-gradient(180deg, #e9227d 0%, #df1c76 100%);
-    background-size: 640px, auto, auto;
-  }
-  .bg-royal-tex {
-    background-image: url("/tex/royal-wash.webp"),
-      radial-gradient(60% 55% at 50% 40%, rgba(140, 50, 180, 0.45), transparent 75%),
-      linear-gradient(180deg, #712494 0%, #661f88 100%);
-    background-size: 640px, auto, auto;
-  }
-  .bg-hero {
-    background-image: var(--wash),
-      radial-gradient(48% 46% at 42% 52%, rgba(255, 80, 160, 0.4), transparent 72%),
-      radial-gradient(60% 50% at 0% 40%, rgba(196, 22, 106, 0.35), transparent 70%),
-      radial-gradient(60% 50% at 100% 20%, rgba(196, 22, 106, 0.35), transparent 70%),
-      linear-gradient(180deg, #e2207a 0%, #e9227d 45%, #e9227d 100%);
-    background-size: 640px, auto, auto, auto, auto;
-  }
+  .animate-glow { animation: glow-m 3.6s ease-in-out infinite; }
+  .animate-flicker { animation-duration: 2.2s; }
+  .disco-glint { filter: none; animation-duration: 3.2s !important; }
+  .disco-lite .disco-glint ~ .disco-glint,
+  .disco-lite .disco-flash:nth-of-type(n + 2),
+  .disco-lite .disco-speck { display: none; }
+  .disco-flash { animation-duration: 4.8s; }
+  .disco-halo { animation-duration: 4.2s; }
 }
 /* Sections scrolled out of view pause their animations (components/PauseOffscreen.tsx). */
 .anim-off,
@@ -333,6 +311,11 @@ html.lenis body {
 .bd-float { animation: bd-float 9s ease-in-out infinite; }
 .bd-glow { animation: bd-glow 3s ease-in-out infinite; }
 .bd-spin { transform: translateX(-50%); animation: bd-spin 180s linear infinite; }
+@media (max-width: 1023px) {
+  .bd-twinkle { animation-duration: 4.6s; }
+  .bd-float { animation-duration: 12s; }
+  .bd-sway { animation-duration: 7s; }
+}
 @media (prefers-reduced-motion: reduce) {
   .bd-sway, .bd-twinkle, .bd-float, .bd-glow, .bd-spin { animation: none !important; }
   .bd-twinkle { opacity: 0.6; }

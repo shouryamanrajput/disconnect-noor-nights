@@ -151,17 +151,17 @@ const Star = ({ className = "", style }: P) => (
   </svg>
 );
 
-export function DiscoBall({ className = "", size = 64, string = 40, delay = 0, period = 5, seed = 1, specks = true }: P & { size?: number; string?: number; delay?: number; period?: number; seed?: number; specks?: boolean }) {
+export function DiscoBall({ className = "", size = 64, string = 40, delay = 0, period = 5, seed = 1, specks = true, lite = false }: P & { size?: number; string?: number; delay?: number; period?: number; seed?: number; specks?: boolean; lite?: boolean }) {
   const g = Math.max(10, size * 0.32); // glint size
   return (
-    <div aria-hidden className={`animate-sway pointer-events-none flex flex-col items-center ${className}`} style={{ animationDelay: `${-delay}s` }}>
+    <div aria-hidden data-pause className={`animate-sway pointer-events-none flex flex-col items-center ${lite ? "disco-lite " : ""}${className}`} style={{ animationDelay: `${-delay}s` }}>
       <div style={{ height: string }} className="w-px bg-marigold/70" />
       <div className="h-1.5 w-3 rounded-sm bg-gradient-to-b from-[#FFE38A] to-gold" style={{ width: Math.max(8, size * 0.22) }} />
       <div className="relative" style={{ width: size, height: size }}>
         {/* pulsing pink/gold halo */}
         <div className="disco-halo absolute -inset-[70%] rounded-full" style={{ animationDelay: `${-delay}s` }} />
         {/* sphere */}
-        <Sphere size={size} rows={size < 36 ? 7 : 10} cols={size < 36 ? 12 : 20} period={period} delay={delay} seed={seed} />
+        <Sphere size={size} rows={lite ? 5 : size < 36 ? 7 : 10} cols={lite ? 12 : size < 36 ? 12 : 20} period={period} delay={delay} seed={seed} />
         {/* edge glints */}
         <Star className="disco-glint absolute" style={{ width: g, height: g, left: "62%", top: "-6%", animationDuration: "1.4s", animationDelay: `${-delay * 0.7}s` }} />
         <Star className="disco-glint absolute" style={{ width: g * 0.8, height: g * 0.8, left: "-10%", top: "46%", animationDuration: "1.9s", animationDelay: `${-delay * 1.3 - 0.6}s` }} />
@@ -413,23 +413,25 @@ export function Plaque({ children, className = "" }: { children: React.ReactNode
 }
 
 /* ── Diya (purple, simple) — kept for the final CTA ─────── */
-export function Diya({ className = "h-20 w-24", style }: P) {
+// `uid` keeps the gradient ids unique: a url(#id) that resolves into a
+// display:none copy (e.g. the desktop-only gutters on phones) paints nothing.
+export function Diya({ className = "h-20 w-24", style, uid = "diya" }: P & { uid?: string }) {
   return (
     <svg viewBox="0 0 120 100" aria-hidden className={className} style={style}>
       <defs>
-        <radialGradient id="diya-glow" cx="50%" cy="50%" r="50%">
+        <radialGradient id={`${uid}-glow`} cx="50%" cy="50%" r="50%">
           <stop offset="0%" stopColor="#FFE58A" stopOpacity="0.9" />
           <stop offset="60%" stopColor="#FF8A1F" stopOpacity="0.25" />
           <stop offset="100%" stopColor="#FF8A1F" stopOpacity="0" />
         </radialGradient>
-        <linearGradient id="diya-flame" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${uid}-flame`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#FFF6C8" />
           <stop offset="55%" stopColor="#FFD43B" />
           <stop offset="100%" stopColor="#FF7A00" />
         </linearGradient>
       </defs>
-      <circle cx="60" cy="34" r="34" fill="url(#diya-glow)" className="animate-glow" style={{ transformOrigin: "60px 34px" }} />
-      <path className="animate-flicker" d="M60 8 C 70 24, 70 38, 60 46 C 50 38, 50 24, 60 8 Z" fill="url(#diya-flame)" />
+      <circle cx="60" cy="34" r="34" fill={`url(#${uid}-glow)`} className="animate-glow" style={{ transformOrigin: "60px 34px" }} />
+      <path className="animate-flicker" d="M60 8 C 70 24, 70 38, 60 46 C 50 38, 50 24, 60 8 Z" fill={`url(#${uid}-flame)`} />
       <path d="M8 50 Q60 46 112 50 Q104 86 60 90 Q16 86 8 50Z" fill="#7E2A2E" />
       <path d="M8 50 Q60 58 112 50" stroke="#FFD43B" strokeWidth="3" fill="none" />
       <path d="M22 64 Q60 74 98 64" stroke="#FF8A1F" strokeWidth="3" fill="none" strokeDasharray="1 7" strokeLinecap="round" />

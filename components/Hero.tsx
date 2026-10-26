@@ -49,8 +49,8 @@ export default function Hero() {
         <DiscoBall size={46} string={44} period={4.4} seed={2} className="absolute left-[50.5%] top-0 hidden lg:flex" delay={1.9} />
         <DiscoBall size={52} string={64} period={5.8} seed={3} className="absolute right-[4.5%] top-0 hidden lg:flex" delay={3.1} />
         {/* phones / tablets: two small balls between the elephants and the arch tip */}
-        <DiscoBall size={24} string={10} period={4.8} seed={4} specks={false} className="absolute left-[29%] top-0 flex sm:left-[33%] sm:top-1 lg:hidden" delay={0.6} />
-        <DiscoBall size={24} string={18} period={5.4} seed={5} specks={false} className="absolute right-[29%] top-0 flex sm:right-[33%] sm:top-1 lg:hidden" delay={2.4} />
+        <DiscoBall size={24} string={10} period={4.8} seed={4} specks={false} lite className="absolute left-[29%] top-0 flex sm:left-[33%] sm:top-1 lg:hidden" delay={0.6} />
+        <DiscoBall size={24} string={18} period={5.4} seed={5} specks={false} lite className="absolute right-[29%] top-0 flex sm:right-[33%] sm:top-1 lg:hidden" delay={2.4} />
       </div>
 
       {/* desktop: elephants at the far edges + diya clusters in the corners */}
@@ -66,6 +66,7 @@ export default function Hero() {
           <AnimatedElephant side="left" sizes="(min-width: 640px) 150px, 104px" priority className="absolute -left-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-left-24 sm:-top-6 sm:w-[150px] lg:hidden" />
           <AnimatedElephant side="right" sizes="(min-width: 640px) 150px, 104px" priority phase={260} className="absolute -right-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-right-24 sm:-top-6 sm:w-[150px] lg:hidden" />
           <Rangoli className="absolute -bottom-[290px] left-1/2 hidden h-[640px] w-[640px] -translate-x-1/2 scale-y-[0.24] lg:block" />
+          <Rangoli className="absolute -bottom-[196px] left-1/2 h-[420px] w-[420px] -translate-x-1/2 scale-y-[0.22] lg:hidden" />
 
           <div className="relative px-11 pb-[3.5rem] pt-[4rem] text-center min-[400px]:px-12 sm:px-16 sm:pb-[4.6rem] sm:pt-[5rem] lg:px-14 lg:pb-[3.4rem] lg:pt-[4rem]">
             <ArchFrame />

@@ -321,7 +321,7 @@ export default function RegisterForm() {
           {/* elephant pair facing a diya, sitting on the arch */}
           <div aria-hidden className="relative z-10 -mb-6 flex items-end justify-center gap-1 sm:-mb-8 sm:gap-3">
             <AnimatedElephant side="left" sizes="120px" className="w-[78px] sm:w-[112px]" />
-            <Diya className="mb-1 h-11 w-12 sm:h-14 sm:w-16" />
+            <Diya uid="dyr" className="mb-1 h-11 w-12 sm:h-14 sm:w-16" />
             <AnimatedElephant side="right" sizes="120px" phase={260} className="w-[78px] sm:w-[112px]" />
           </div>
 

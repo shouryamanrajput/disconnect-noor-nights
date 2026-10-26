@@ -66,7 +66,7 @@ function Kandil({ string, delay, style }: { string: number; delay: number; style
 // stays out of the page HTML; it only spins slowly behind the cards.
 function Mandala({ className = "", style }: { className?: string; style?: CSSProperties }) {
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src="/decor/mandala.svg" alt="" aria-hidden width={200} height={200} loading="lazy" decoding="async" className={`bd-spin absolute h-auto ${className}`} style={style} />;
+  return <img data-pause src="/decor/mandala.svg" alt="" aria-hidden width={200} height={200} loading="lazy" decoding="async" className={`bd-spin absolute h-auto ${className}`} style={style} />;
 }
 
 function Paisley({ className = "", style }: { className?: string; style?: CSSProperties }) {
@@ -98,6 +98,11 @@ function Bokeh({ style }: { style: CSSProperties }) {
 const SPARKS: [number, number, number, number][] = [
   [18, 14, 14, 0], [70, 22, 10, 1.1], [40, 34, 12, 2.3], [84, 47, 9, 0.6], [12, 60, 11, 1.7], [58, 70, 14, 2.9], [30, 86, 10, 0.9], [78, 92, 12, 2.1],
 ];
+/* phones: [left%, top%, size px, delay s] */
+const PHONE_SPARKS: [number, number, number, number][] = [
+  [2.5, 10, 11, 0], [93, 18, 10, 1.2], [3, 46, 9, 2.1], [92.5, 58, 11, 0.7], [3, 82, 10, 1.6], [94, 90, 9, 2.6],
+];
+const PHONE_BOKEH: [number, number, number, number][] = [[4, 32, 70, 0], [96, 70, 80, 4]];
 const BOKEH: [number, number, number, number][] = [
   [22, 26, 90, 0], [72, 52, 120, 3], [30, 76, 100, 5], [80, 12, 70, 2],
 ];
@@ -143,13 +148,35 @@ export default function FestiveBackdrop({ variant = "full", inner = 240 }: { var
       <div className="absolute inset-y-0 right-0 hidden lg:block" style={{ left: `calc(50% + ${inner}px)` }}>
         <Gutter side="right" variant={variant} />
       </div>
-      {/* phones / tablets: a few tiny sparkles at the very edges */}
+      {/* phones / tablets: the same decor, scaled for ~412px and kept behind the
+          (opaque, z-10) content so it never covers text or inputs. Each piece
+          pauses on its own when off screen (data-pause → PauseOffscreen). */}
       <div className="absolute inset-0 lg:hidden">
-        {[
-          [2.5, 10, 10, 0], [93, 18, 9, 1.2], [4, 46, 8, 2.1], [92, 58, 10, 0.7], [3, 82, 9, 1.6], [94, 90, 8, 2.6],
-        ].map(([x, y, s, del], i) => (
-          <Sparkle key={i} style={{ left: `${x}%`, top: `${y}%`, width: s, height: s, animationDelay: `${-del}s`, opacity: 0.7 }} />
+        {(variant === "full" ? PHONE_SPARKS : PHONE_SPARKS.filter((_, i) => i % 3 !== 2)).map(([x, y, s, del], i) => (
+          <span key={`s${i}`} data-pause className="absolute" style={{ left: `${x}%`, top: `${y}%`, width: s, height: s }}>
+            <Sparkle className="" style={{ inset: 0, width: s, height: s, animationDelay: `${-del}s`, opacity: 0.8 }} />
+          </span>
         ))}
+        {PHONE_BOKEH.map(([x, y, s, del], i) => (
+          <span key={`b${i}`} data-pause className="bd-float absolute rounded-full bg-[radial-gradient(circle,rgba(255,206,60,0.5),rgba(255,206,60,0)_70%)]" style={{ left: `${x}%`, top: `${y}%`, width: s, height: s, marginLeft: -s / 2, animationDelay: `${-del}s`, opacity: 0.5 }} />
+        ))}
+        {variant === "full" && (
+          <>
+            {/* top corners, beside the elephant pair */}
+            <div data-pause className="absolute inset-x-0 top-0 h-[170px]">
+              <Strand length={112} delay={0.4} style={{ left: "1.5%" }} />
+              <div className="absolute left-[9%] top-0 origin-top scale-[0.62]"><Kandil string={34} delay={1} style={{ left: 0 }} /></div>
+              <DiscoBall size={28} string={46} period={5} seed={6} specks={false} lite delay={2} className="absolute right-[13%] top-0" />
+              <Strand length={92} delay={2.2} style={{ right: "1.5%" }} />
+            </div>
+            {/* bottom strip under the panel */}
+            <Mandala className="bottom-[-170px] left-1/2 w-[300px] opacity-[0.2]" style={{ top: "auto" }} />
+            <Paisley className="bottom-6 left-[24%] w-7 opacity-30" />
+            <Paisley className="bottom-6 right-[24%] w-7 -scale-x-100 opacity-30" />
+            <div data-pause className="absolute bottom-3 left-[4%]"><Diya uid="dym1" className="h-9 w-11" /></div>
+            <div data-pause className="absolute bottom-3 right-[4%]"><Diya uid="dym2" className="h-9 w-11" /></div>
+          </>
+        )}
       </div>
     </div>
   );

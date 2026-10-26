@@ -55,7 +55,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   // paper textures used by the hero/background (fetched early, tiny tiles)
-  preload("/tex/grain.webp", { as: "image", fetchPriority: "high", media: "(min-width: 1024px)" });
+  preload("/tex/grain.webp", { as: "image", fetchPriority: "high" });
   preload("/tex/wash.webp", { as: "image", fetchPriority: "high" });
   return (
     <html
