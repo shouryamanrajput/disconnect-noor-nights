@@ -82,7 +82,7 @@ export const site = {
    * friendly "registrations open soon" message and makes no network call
    * (or opens links.register instead, if that is set).
    */
-  sheetEndpoint: "https://script.google.com/macros/s/AKfycbwLuADnHeGznzV2vyh7xai6mX-1Z_p_CnhNw9hB7xsr7lI9v0z-Ut_ASmnHimymtwnW/exec", // Google Apps Script web app (see SHEET-SETUP.md). Must be deployed with access "Anyone".
+  sheetEndpoint: "https://script.google.com/macros/s/AKfycby8sBcdF6fzLK5lAuXdA3eg4nQVZ0pmGbukUfr62rAiNIpeJpDmQvQvS9A_GSvqeu_t/exec", // Google Apps Script web app (see SHEET-SETUP.md). Must be deployed with access "Anyone".
 
   /**
    * PAYMENT (step 2 of the form). After the details are sent, the visitor

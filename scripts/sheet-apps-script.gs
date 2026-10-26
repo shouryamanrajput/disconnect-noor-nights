@@ -54,7 +54,7 @@ function doPost(e) {
     return handleRegistration_(data);
   } catch (err) {
     console.error(err);
-    return json_({ ok: false, error: 'server_error' });
+    return json_({ ok: false, error: 'server_error', detail: String(err) });
   }
 }
 
