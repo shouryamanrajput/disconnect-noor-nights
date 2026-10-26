@@ -13,7 +13,7 @@ const icons = [
 // and the dress code as a slim coral strip.
 export default function Deets() {
   return (
-    <section id="deets" className="bg-royal-tex relative scroll-mt-14 overflow-hidden py-6 sm:py-9">
+    <section id="deets" className="bg-royal-tex relative scroll-mt-12 overflow-hidden sm:scroll-mt-14 py-6 sm:py-9">
       <FestiveBackdrop variant="light" inner={550} />
       <div className="container-px relative z-10 max-w-content lg:max-w-[1080px]">
         <div>

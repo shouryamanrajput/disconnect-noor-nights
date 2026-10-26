@@ -74,18 +74,18 @@ function newRegId() {
 function Steps({ step }: { step: 1 | 2 | 3 }) {
   const items = ["Details", "Payment"];
   return (
-    <ol aria-label="Registration steps" className="mx-auto mt-6 flex max-w-[320px] items-center justify-center gap-2">
+    <ol aria-label="Registration steps" className="mx-auto mt-3 flex max-w-[320px] items-center justify-center gap-1.5 sm:mt-6 sm:gap-2">
       {items.map((label, i) => {
         const n = i + 1;
         const done = step > n;
         const current = step === n;
         return (
-          <li key={label} aria-current={current ? "step" : undefined} className="flex items-center gap-2">
-            {i > 0 && <span aria-hidden className={`h-0.5 w-8 rounded-full sm:w-12 ${step > 1 ? "bg-marigold" : "bg-cream/30"}`} />}
-            <span aria-hidden className={`grid h-8 w-8 place-items-center rounded-full border-2 font-sans text-[13.5px] font-extrabold ${done || current ? "border-marigold bg-marigold text-plum" : "border-cream/40 text-cream/80"}`}>
+          <li key={label} aria-current={current ? "step" : undefined} className="flex items-center gap-1.5 sm:gap-2">
+            {i > 0 && <span aria-hidden className={`h-0.5 w-6 rounded-full sm:w-12 ${step > 1 ? "bg-marigold" : "bg-cream/30"}`} />}
+            <span aria-hidden className={`grid h-6 w-6 place-items-center rounded-full border-2 font-sans text-[12px] sm:h-8 sm:w-8 sm:text-[13.5px] font-extrabold ${done || current ? "border-marigold bg-marigold text-plum" : "border-cream/40 text-cream/80"}`}>
               {done ? "✓" : n}
             </span>
-            <span className={`font-sans text-[14px] font-bold ${current ? "text-marigold" : "text-cream/85"}`}>
+            <span className={`font-sans text-[13px] font-bold sm:text-[14px] ${current ? "text-marigold" : "text-cream/85"}`}>
               {label}
               <span className="sr-only">{done ? " (done)" : current ? " (current step)" : ""}</span>
             </span>
@@ -116,7 +116,7 @@ function buildBody(v: Values, company: string, regId: string) {
 
 /* ── small building blocks ─────────────────────────────── */
 function Num({ n }: { n: string }) {
-  return <span aria-hidden className="mr-2 inline-grid h-6 w-6 shrink-0 place-items-center rounded-full bg-marigold font-sans text-[11px] font-extrabold text-plum">{n}</span>;
+  return <span aria-hidden className="mr-1.5 inline-grid h-5 w-5 shrink-0 place-items-center rounded-full bg-marigold font-sans text-[10px] sm:mr-2 sm:h-6 sm:w-6 sm:text-[11px] font-extrabold text-plum">{n}</span>;
 }
 function ErrorText({ id, msg }: { id: string; msg?: string }) {
   if (!msg) return null;
@@ -128,18 +128,18 @@ function ErrorText({ id, msg }: { id: string; msg?: string }) {
   );
 }
 const inputBase =
-  "block w-full h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
+  "block w-full h-12 sm:h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
 const inputCls = (bad?: string) => `${inputBase} ${bad ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`;
 
 function Field({ id, n, label, hint, error, children }: { id: string; n?: string; label: string; hint?: string; error?: string; children: ReactNode }) {
   return (
     <div>
       <label htmlFor={id} className="flex items-center font-sans text-[15px] font-semibold leading-snug text-cream sm:text-base">
-        {n ? <Num n={n} /> : <span aria-hidden className="mr-2 inline-block h-6 w-6 shrink-0" />}
+        {n ? <Num n={n} /> : <span aria-hidden className="mr-1.5 inline-block h-5 w-5 shrink-0 sm:mr-2 sm:h-6 sm:w-6" />}
         {label}
       </label>
-      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-8 text-[12.5px] text-cream/70">{hint}</p>}
-      <div className="mt-2">{children}</div>
+      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-[26px] text-[12.5px] sm:pl-8 text-cream/70">{hint}</p>}
+      <div className="mt-1.5 sm:mt-2">{children}</div>
       <ErrorText id={`${id}-err`} msg={error} />
     </div>
   );
@@ -152,7 +152,7 @@ function Pills({ name, n, legend, options, value, onChange, error, grid = false 
         <Num n={n} />
         {legend}
       </legend>
-      <div className={`mt-2 ${grid ? "grid grid-cols-4 gap-1.5 sm:gap-2" : "flex flex-wrap gap-1.5 sm:gap-2"}`}>
+      <div className={`mt-1.5 sm:mt-2 ${grid ? "grid grid-cols-2 gap-1.5 min-[360px]:grid-cols-4 sm:gap-2 [&_label]:px-2 sm:[&_label]:px-3.5" : "flex flex-wrap gap-1.5 sm:gap-2"}`}>
         {options.map((o) => {
           const id = `rf-${name}-${o.replace(/\W+/g, "-")}`;
           return (
@@ -314,25 +314,25 @@ export default function RegisterForm() {
   const desc = (k: keyof Values, hint = false) => [hint ? `rf-${k}-hint` : "", errors[k] ? `rf-${k}-err` : ""].filter(Boolean).join(" ") || undefined;
 
   return (
-    <section id="register" className="bg-poster relative scroll-mt-14 overflow-hidden pb-20 pt-14 sm:pb-24 sm:pt-20">
+    <section id="register" className="bg-poster relative scroll-mt-12 overflow-hidden pb-10 pt-6 sm:scroll-mt-14 sm:pb-24 sm:pt-20">
       <FestiveBackdrop variant="full" inner={350} />
       <div className="container-px relative z-10 max-w-[760px]">
         <div>
           {/* elephant pair facing a diya, sitting on the arch */}
-          <div aria-hidden className="relative z-10 -mb-6 flex items-end justify-center gap-1 sm:-mb-8 sm:gap-3">
-            <AnimatedElephant side="left" sizes="120px" className="w-[78px] sm:w-[112px]" />
-            <Diya uid="dyr" className="mb-1 h-11 w-12 sm:h-14 sm:w-16" />
-            <AnimatedElephant side="right" sizes="120px" phase={260} className="w-[78px] sm:w-[112px]" />
+          <div aria-hidden className="relative z-10 -mb-5 flex items-end justify-center gap-1 sm:-mb-8 sm:gap-3">
+            <AnimatedElephant side="left" sizes="120px" className="w-[64px] sm:w-[112px]" />
+            <Diya uid="dyr" className="mb-1 h-9 w-10 sm:h-14 sm:w-16" />
+            <AnimatedElephant side="right" sizes="120px" phase={260} className="w-[64px] sm:w-[112px]" />
           </div>
 
           {/* purple jharokha panel: arched top, gold inner frame */}
-          <div ref={panelRef} className="register-arch bg-royal-tex relative scroll-mt-20 px-4 pb-7 pt-12 shadow-[0_12px_28px_rgba(70,8,60,0.3)] sm:px-10 sm:pb-12 sm:pt-20">
+          <div ref={panelRef} className="register-arch bg-royal-tex relative scroll-mt-14 px-3.5 pb-5 pt-9 shadow-[0_12px_28px_rgba(70,8,60,0.3)] sm:scroll-mt-20 sm:px-10 sm:pb-12 sm:pt-20">
             <div aria-hidden className="register-arch-inner pointer-events-none absolute inset-2.5 border-2 border-marigold/70 sm:inset-4" />
             <div className="relative">
               <div className="text-center">
-                <h2 className="gold-text title-lg font-display text-[2.5rem] uppercase leading-tight sm:text-[3.4rem]">{r.heading}</h2>
-                <Ornament className="mt-3" />
-                <p className="mt-3 font-sans text-[13.5px] font-bold uppercase tracking-[0.08em] text-gold sm:text-[14.5px]">{r.subline}</p>
+                <h2 className="gold-text title-lg font-display text-[1.9rem] uppercase leading-tight max-[359px]:text-[1.6rem] sm:text-[3.4rem]">{r.heading}</h2>
+                <Ornament className="mt-1 max-sm:gap-2 max-sm:[&>span]:w-10 max-sm:[&_svg]:h-4 max-sm:[&_svg]:w-6 sm:mt-3" />
+                <p className="mt-1.5 font-sans text-[12px] font-bold uppercase tracking-[0.06em] text-gold max-sm:leading-snug sm:mt-3 sm:text-[14.5px] sm:tracking-[0.08em]">{r.subline}</p>
               </div>
 
               <Steps step={status === "done" ? 3 : status === "pay" ? 2 : 1} />
@@ -347,7 +347,7 @@ export default function RegisterForm() {
                   {reg && <p className="mt-3 text-[14px] text-cream/85">Registration ID <span className="font-mono font-bold text-marigold">{reg.regId}</span>. Keep it handy.</p>}
                 </div>
               ) : (
-                <form noValidate onSubmit={onSubmit} className="mx-auto mt-6 max-w-[560px] space-y-5 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
+                <form noValidate onSubmit={onSubmit} className="mx-auto mt-4 max-w-[560px] space-y-4 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
                   {notice && (
                     <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[14.5px] font-bold">
                       {notice}
@@ -359,11 +359,11 @@ export default function RegisterForm() {
 
                   <Pills name="ageGroup" n="02" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} grid />
 
-                  <div className="grid gap-5 sm:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2 sm:gap-5">
                     <Field id="rf-mobile" label="Mobile number" error={errors.mobile}>
                       <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.mobile ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                         <span aria-hidden className="grid shrink-0 place-items-center border-r-2 border-plum/15 bg-marigold/90 px-3 font-sans text-[16px] font-extrabold text-plum">+91</span>
-                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-10 w-full min-w-0 bg-transparent px-3 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
+                        <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-11 w-full min-w-0 bg-transparent px-3 py-2 sm:h-10 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
                       </div>
                     </Field>
                     <Field id="rf-email" label="Email" error={errors.email}>
@@ -374,7 +374,7 @@ export default function RegisterForm() {
                   <Field id="rf-instagram" n="03" label="What’s your Instagram handle?" hint="Optional, but useful for event communication" error={errors.instagram}>
                     <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.instagram ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
                       <span aria-hidden className="grid shrink-0 place-items-center pl-3.5 font-sans text-[16px] font-extrabold text-plum/60">@</span>
-                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-10 w-full min-w-0 bg-transparent py-2 pl-1 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
+                      <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-11 w-full min-w-0 bg-transparent py-2 pl-1 sm:h-10 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 outline-none" />
                     </div>
                   </Field>
 
@@ -395,7 +395,7 @@ export default function RegisterForm() {
 
                   <Pills name="comfortable" n="06" legend="Are you comfortable attending a social event where you may not know everyone?" options={f.comfortable} value={v.comfortable} onChange={(x) => set("comfortable", x)} error={errors.comfortable} />
 
-                  <div className="pt-1">
+                  <div className="pt-0.5 sm:pt-1">
                     {tried && errCount > 0 && (
                       <p role="alert" className="mb-3 text-center text-[14px] font-bold text-[#FFE27A]">
                         Please fix the {errCount === 1 ? "highlighted field" : `${errCount} highlighted fields`} above.
@@ -418,8 +418,8 @@ export default function RegisterForm() {
                 </form>
               )}
 
-              <p id="rf-note" className="mx-auto mt-5 max-w-[460px] text-balance text-center text-[12.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
-              <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0 font-semibold sm:gap-x-6">
+              <p id="rf-note" className="mx-auto mt-4 max-w-[460px] text-balance text-center text-[12.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
+              <div className="mt-1 sm:mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0 font-semibold sm:gap-x-6">
                 <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <WhatsAppIcon className="h-5 w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
                 </a>

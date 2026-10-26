@@ -35,7 +35,7 @@ function Sparkle({ className = "" }: { className?: string }) {
 export default function Hero() {
   const e = site.event;
   return (
-    <section id="top" className="bg-hero relative overflow-hidden pt-14 sm:pt-16 lg:flex lg:min-h-[100svh] lg:flex-col">
+    <section id="top" className="bg-hero relative overflow-hidden pt-12 sm:pt-16 lg:flex lg:min-h-[100svh] lg:flex-col">
       <div aria-hidden className="hero-bokeh pointer-events-none absolute inset-0" />
       <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-14 bg-gradient-to-b from-transparent to-magenta" />
       <div aria-hidden className="hero-floor pointer-events-none absolute inset-x-0 bottom-0 hidden h-[17%] lg:block" />
