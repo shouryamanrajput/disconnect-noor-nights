@@ -31,7 +31,7 @@ export function Toran({ className = "", full = false }: P & { full?: boolean }) 
   if (!full) {
     return (
       <svg viewBox="0 0 1440 52" preserveAspectRatio="xMidYMin slice" aria-hidden className={`pointer-events-none h-[34px] w-full sm:h-[44px] ${className}`}>
-        <rect x="0" y="0" width="1440" height="4" fill="#2F9E44" />
+        <rect x="0" y="0" width="1440" height="4" fill="#2C821B" />
         {beads.map((b, i) => <Bead key={i} cx={b.x} cy={b.y} r={6.5} tone={b.t} />)}
       </svg>
     );
@@ -69,15 +69,15 @@ export function Toran({ className = "", full = false }: P & { full?: boolean }) 
         <g key={s.x}>
           <line x1={s.x} y1={14} x2={s.x} y2={30 + s.n * 15} stroke="#C98E00" strokeWidth="1.2" />
           {Array.from({ length: s.n }).map((_, i) => <Bead key={i} cx={s.x} cy={34 + i * 15} r={6.5} tone={i % 2 ? "#FF8A1F" : "#FFA51B"} />)}
-          <path d={`M${s.x} ${30 + s.n * 15} q-14 4 -16 20 q12 -2 16 -20Z`} fill="#2F9E44" />
+          <path d={`M${s.x} ${30 + s.n * 15} q-14 4 -16 20 q12 -2 16 -20Z`} fill="#2C821B" />
           <path d={`M${s.x} ${30 + s.n * 15} q14 4 16 20 q-12 -2 -16 -20Z`} fill="#3DB356" />
           <Bead cx={s.x} cy={48 + s.n * 15} r={7} tone="#FF8A1F" />
           <Bead cx={s.x} cy={63 + s.n * 15} r={5.5} tone="#FFA51B" />
         </g>
       ))}
-      <rect x="0" y="0" width="1440" height="5" fill="#2F9E44" />
+      <rect x="0" y="0" width="1440" height="5" fill="#2C821B" />
       {Array.from({ length: 48 }).map((_, i) => (
-        <path key={i} d={`M${i * 30 + 15} 3 q-7 9 0 18 q7 -9 0 -18Z`} fill={i % 2 ? "#2F9E44" : "#3DB356"} />
+        <path key={i} d={`M${i * 30 + 15} 3 q-7 9 0 18 q7 -9 0 -18Z`} fill={i % 2 ? "#2C821B" : "#3DB356"} />
       ))}
       {beads.map((b, i) => <Bead key={i} cx={b.x} cy={b.y + 4} r={8.5} tone={b.t} />)}
     </svg>
@@ -294,10 +294,10 @@ export function TempleArches({ className = "" }: P) {
     `M${x} 400 V${400 - h * 0.62} C${x} ${400 - h * 0.85} ${x + w * 0.3} ${400 - h * 0.9} ${x + w / 2} ${400 - h} C${x + w * 0.7} ${400 - h * 0.9} ${x + w} ${400 - h * 0.85} ${x + w} ${400 - h * 0.62} V400Z`;
   return (
     <svg viewBox="0 0 600 400" aria-hidden className={`pointer-events-none ${className}`}>
-      <path d={arch(40, 120, 300)} fill="#3B0A4A" />
-      <path d={arch(190, 220, 380)} fill="#3B0A4A" />
-      <path d={arch(440, 120, 300)} fill="#3B0A4A" />
-      <path d={arch(225, 150, 290)} fill="#7A0F55" />
+      <path d={arch(40, 120, 300)} fill="#B0125F" />
+      <path d={arch(190, 220, 380)} fill="#B0125F" />
+      <path d={arch(440, 120, 300)} fill="#B0125F" />
+      <path d={arch(225, 150, 290)} fill="#C4166A" />
     </svg>
   );
 }
@@ -305,7 +305,7 @@ export function TempleArches({ className = "" }: P) {
 /* ── Lotus ornament ─────────────────────────────────────── */
 export function Lotus({ className = "h-6 w-8" }: P) {
   return (
-    <svg viewBox="0 0 48 32" aria-hidden className={className} fill="#FFD43B">
+    <svg viewBox="0 0 48 32" aria-hidden className={className} fill="#FBE212">
       <path d="M24 2c5 6 6 14 0 24-6-10-5-18 0-24Z" />
       <path d="M24 26C18 18 11 13 5 12c1 8 8 14 19 14Z" />
       <path d="M24 26c6-8 13-13 19-14-1 8-8 14-19 14Z" />
@@ -342,14 +342,14 @@ export function ArchFrame({ className = "" }: P) {
     <svg viewBox="0 0 400 600" preserveAspectRatio="none" aria-hidden className={`pointer-events-none absolute inset-0 h-full w-full overflow-visible ${className}`}>
       <defs>
         <radialGradient id="arch-fill" cx="50%" cy="38%" r="75%">
-          <stop offset="0%" stopColor="#43107F" />
-          <stop offset="100%" stopColor="#2A0857" />
+          <stop offset="0%" stopColor="#7A2A9E" />
+          <stop offset="100%" stopColor="#6A1F8C" />
         </radialGradient>
       </defs>
-      <path d={ARCH} fill="rgba(20,2,40,0.45)" transform="translate(0 12)" />
-      <path d={ARCH} fill="url(#arch-fill)" stroke="#5A1F9A" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-      <path d={ARCH} fill="none" stroke="#FFC93B" strokeWidth="2" vectorEffect="non-scaling-stroke" transform="translate(12 18) scale(0.94)" />
-      <path d={ARCH} fill="none" stroke="#FFC93B" strokeOpacity="0.4" strokeWidth="1" vectorEffect="non-scaling-stroke" transform="translate(20 30) scale(0.9)" />
+      <path d={ARCH} fill="rgba(70,8,60,0.35)" transform="translate(0 12)" />
+      <path d={ARCH} fill="url(#arch-fill)" stroke="#8A3BB0" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+      <path d={ARCH} fill="none" stroke="#F9DD21" strokeOpacity="0.75" strokeWidth="1.6" vectorEffect="non-scaling-stroke" transform="translate(12 18) scale(0.94)" />
+      <path d={ARCH} fill="none" stroke="#F9DD21" strokeOpacity="0.28" strokeWidth="1" vectorEffect="non-scaling-stroke" transform="translate(20 30) scale(0.9)" />
     </svg>
   );
 }
@@ -359,23 +359,20 @@ export function ArchTile({ className = "" }: P) {
   const d = "M50 2 C55 9 62 12 70 13 C78 14 82 18 84 22 C86 25 92 26 96 26 C98 26 98 28 98 30 L98 96 C98 98 98 100 96 100 C92 100 86 101 84 104 C82 108 78 112 70 113 C62 114 55 117 50 124 C45 117 38 114 30 113 C22 112 18 108 16 104 C14 101 8 100 4 100 C2 100 2 98 2 96 L2 30 C2 28 2 26 4 26 C8 26 14 25 16 22 C18 18 22 14 30 13 C38 12 45 9 50 2Z";
   return (
     <svg viewBox="0 0 100 126" preserveAspectRatio="none" aria-hidden className={`pointer-events-none absolute inset-0 h-full w-full ${className}`}>
-      <path d={d} fill="#26084D" fillOpacity="0.92" stroke="#FFC93B" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
+      <path d={d} fill="#5A1A7E" fillOpacity="0.95" stroke="#F9DD21" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }
 
-/* ── Pointed pill plaque ("ENTRY ON INVITE ONLY") ───────── */
+/* ── Cusped coral plaque ("DRESS LIKE YOU ARE THE MAIN CHARACTER") ──
+   Coral fill, orange double outline — as on the poster. */
+const PLAQUE = "M22 2 H278 C284 10 290 14 298 16 C292 26 292 44 298 54 C290 56 284 60 278 68 H22 C16 60 10 56 2 54 C8 44 8 26 2 16 C10 14 16 10 22 2Z";
 export function Plaque({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={`relative px-7 py-3 ${className}`}>
-      <svg viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden className="absolute inset-0 h-full w-full overflow-visible">
-        <path
-          d="M22 2 H278 C284 10 290 14 298 16 C292 26 292 44 298 54 C290 56 284 60 278 68 H22 C16 60 10 56 2 54 C8 44 8 26 2 16 C10 14 16 10 22 2Z"
-          fill="rgba(30,4,62,0.55)"
-          stroke="#FFC93B"
-          strokeWidth="1.6"
-          vectorEffect="non-scaling-stroke"
-        />
+    <div className={`relative px-8 py-3.5 ${className}`}>
+      <svg viewBox="0 0 300 70" preserveAspectRatio="none" aria-hidden className="absolute inset-0 h-full w-full overflow-visible drop-shadow-[0_6px_12px_rgba(70,8,60,0.35)]">
+        <path d={PLAQUE} fill="#E2247C" stroke="#FB8E32" strokeWidth="3" vectorEffect="non-scaling-stroke" />
+        <path d={PLAQUE} fill="none" stroke="#FB8E32" strokeWidth="1.4" vectorEffect="non-scaling-stroke" transform="translate(10 6) scale(0.933 0.83)" />
       </svg>
       <div className="relative">{children}</div>
     </div>

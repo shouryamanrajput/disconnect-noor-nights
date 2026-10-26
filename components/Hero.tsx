@@ -1,6 +1,5 @@
 import { site } from "@/lib/config";
 import { ArchFrame, DiscoBall, DiyaCluster, Lotus, Ornament, Plaque, Rangoli, TempleArches, Toran } from "@/components/Decor";
-import { CalendarIcon, ClockIcon, PinIcon } from "@/components/Icons";
 import Countdown from "@/components/Countdown";
 import AnimatedElephant from "@/components/AnimatedElephant";
 import InviteButton from "@/components/InviteButton";
@@ -11,12 +10,34 @@ import InviteButton from "@/components/InviteButton";
 // diya + marigold clusters in the bottom corners, rangoli glow on the floor.
 // phones — arch then countdown, elephants peeking at the arch's top corners,
 // one small diya + marigold cluster each side of the arch base.
+// "Oct 31st, 2026" → 31<sup>st</sup>, like the poster.
+function Ordinal({ text }: { text: string }) {
+  const m = text.match(/^(.*?\d)(st|nd|rd|th)(.*)$/i);
+  if (!m) return <>{text}</>;
+  return (
+    <>
+      {m[1]}
+      <sup className="ml-[1px] align-[0.65em] text-[0.5em]">{m[2]}</sup>
+      {m[3]}
+    </>
+  );
+}
+
+// Four-point sparkle flanking the place, as on the poster.
+function Sparkle({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className={className}>
+      <path d="M12 0c.7 6.6 4.7 10.6 12 12-7.3 1.4-11.3 5.4-12 12-.7-6.6-4.7-10.6-12-12C7.3 10.6 11.3 6.6 12 0Z" fill="#F9DD21" />
+    </svg>
+  );
+}
+
 export default function Hero() {
   const e = site.event;
   return (
     <section id="top" className="bg-hero relative overflow-hidden pt-14 sm:pt-16 lg:flex lg:min-h-[100svh] lg:flex-col">
       <div aria-hidden className="hero-bokeh pointer-events-none absolute inset-0" />
-      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-14 bg-gradient-to-b from-transparent to-[#8e1050]" />
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 z-[5] h-14 bg-gradient-to-b from-transparent to-magenta" />
       <div aria-hidden className="hero-floor pointer-events-none absolute inset-x-0 bottom-0 hidden h-[17%] lg:block" />
       <TempleArches className="absolute bottom-[14%] right-[13%] hidden w-[34vw] max-w-[560px] opacity-20 [mask-image:linear-gradient(to_bottom,black_30%,transparent)] lg:block" />
 
@@ -50,31 +71,30 @@ export default function Hero() {
             <ArchFrame />
             <Lotus className="absolute left-1/2 top-[3.4%] h-6 w-9 -translate-x-1/2 sm:h-7 sm:w-10" />
             <div className="relative">
-              <p className="font-caps text-[11px] font-bold uppercase tracking-[0.2em] text-cream sm:text-[13px] sm:tracking-[0.24em]">{site.name} presents</p>
+              <p className="font-sans text-[11px] font-bold uppercase tracking-[0.22em] text-cream sm:text-[12px] sm:tracking-[0.3em]">{site.name} presents</p>
               <h1 className="mt-1 sm:mt-2">
-                <span className="gold-text block font-hindi text-[3.5rem] leading-[1.15] min-[400px]:text-[3.8rem] sm:text-[5.4rem] lg:text-[4.5rem] xl:text-[4.8rem]">{e.hindiTitle}</span>
-                <span className="gold-text -mt-1 block whitespace-nowrap font-caps text-[1.6rem] font-bold uppercase leading-none min-[400px]:text-[1.75rem] sm:text-[2.4rem] lg:text-[2.15rem] xl:text-[2.3rem]">{e.latinTitle}</span>
+                <span className="gold-text title-lg block font-hindi text-[3.6rem] font-bold leading-[1.2] min-[400px]:text-[3.9rem] sm:text-[5.4rem] lg:text-[4.6rem] xl:text-[4.9rem]">{e.hindiTitle}</span>
+                <span className="gold-text title-lg -mt-1 block whitespace-nowrap font-display text-[2.6rem] leading-none [-webkit-text-stroke:0.6px_#FBE212] [font-variant:small-caps] min-[400px]:text-[2.85rem] sm:text-[3.9rem] lg:text-[3.45rem] xl:text-[3.65rem]">{e.latinTitle}</span>
                 <span className="sr-only"> — {e.title}</span>
               </h1>
-              <Ornament className="mt-4 sm:mt-5 lg:mt-3" />
-              <ul className="mx-auto mt-3 inline-flex flex-col items-start gap-1.5 text-left sm:mt-4 sm:gap-2">
-                <li className="flex items-center gap-3">
-                  <CalendarIcon className="h-5 w-5 shrink-0 text-marigold sm:h-6 sm:w-6" />
-                  <span className="font-caps text-[1.2rem] font-bold uppercase tracking-wide text-marigold sm:text-[1.6rem]">{e.posterDate}</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <ClockIcon className="h-5 w-5 shrink-0 text-marigold sm:h-6 sm:w-6" />
-                  <span className="font-caps text-[15px] font-semibold uppercase tracking-[0.1em] text-cream sm:text-lg">{e.posterTime}</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <PinIcon className="h-5 w-5 shrink-0 text-marigold sm:h-6 sm:w-6" />
-                  <span className="font-caps text-[1.1rem] font-bold uppercase tracking-[0.12em] text-marigold sm:text-[1.35rem]">{e.posterPlace}</span>
-                </li>
-              </ul>
-              <Plaque className="mx-auto mt-4 max-w-[calc(100%-2rem)] sm:mt-5 sm:max-w-[330px] lg:mt-4">
-                <p className="font-caps text-[12px] font-bold uppercase leading-snug tracking-wide text-cream sm:text-[13px]">{e.posterNote}</p>
+              <Ornament className="mt-4 sm:mt-5 lg:mt-4" />
+              <div className="mt-3 sm:mt-4">
+                <p className="font-sans text-[1.45rem] font-extrabold uppercase leading-none text-gold drop-shadow-[0_2px_0_rgba(70,8,90,0.5)] sm:text-[1.95rem] lg:text-[1.75rem]">
+                  <Ordinal text={e.posterDate} />
+                </p>
+                <p className="mt-1.5 font-caps text-[15px] uppercase tracking-[0.06em] text-gold sm:text-[1.2rem] lg:text-[1.1rem]">{e.posterTime}</p>
+                <p className="mt-2 flex items-center justify-center gap-3 whitespace-nowrap font-sans text-[1.3rem] font-extrabold uppercase leading-none text-gold drop-shadow-[0_2px_0_rgba(70,8,90,0.5)] sm:text-[1.7rem] lg:gap-2 lg:text-[1.3rem] xl:text-[1.45rem]">
+                  <Sparkle className="h-5 w-5 shrink-0 sm:h-7 sm:w-7" />
+                  {e.posterPlace}
+                  <Sparkle className="h-5 w-5 shrink-0 sm:h-7 sm:w-7" />
+                </p>
+              </div>
+              <Ornament className="mt-3 sm:mt-4" />
+              <Plaque className="mx-auto mt-4 max-w-[calc(100%-1rem)] sm:mt-5 sm:max-w-[340px] lg:mt-4">
+                <p className="font-caps text-[12.5px] font-bold uppercase leading-snug tracking-[0.04em] text-amber sm:text-[14px]">{e.dressLine}</p>
               </Plaque>
-              <div className="mt-5 flex justify-center sm:mt-6 lg:mt-5">
+              <p className="mt-4 font-sans text-[13px] font-extrabold uppercase tracking-[0.08em] text-gold sm:text-[15px]">{e.posterNote}</p>
+              <div className="mt-3 flex justify-center sm:mt-4 lg:mt-3">
                 <InviteButton className="min-h-[48px] w-full max-w-[230px] sm:w-auto sm:max-w-none sm:px-8" />
               </div>
             </div>

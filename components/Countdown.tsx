@@ -34,18 +34,18 @@ export default function Countdown() {
       <Lotus className="mx-auto h-6 w-9" />
       <div className="mt-2 flex items-center justify-center gap-3">
         <span className="h-px w-8 bg-marigold/80 sm:w-12" />
-        <p className="font-caps text-[13px] font-bold uppercase tracking-[0.22em] text-cream sm:text-base">{started ? "The party is on" : "Party starts in"}</p>
+        <p className="font-sans text-[12px] font-extrabold uppercase tracking-[0.2em] text-cream sm:text-base">{started ? "The party is on" : "Party starts in"}</p>
         <span className="h-px w-8 bg-marigold/80 sm:w-12" />
       </div>
       {started ? (
-        <p className="mt-4 font-display text-3xl text-marigold">See you on the dance floor!</p>
+        <p className="mt-4 font-display text-3xl uppercase text-marigold">See you on the dance floor!</p>
       ) : (
         <div className="mx-auto mt-4 grid max-w-[400px] grid-cols-4 gap-2 sm:gap-3">
           {(left === null ? parts(0).map((p) => ({ ...p, v: -1 })) : parts(left)).map((p) => (
             <div key={p.l} className="relative aspect-[100/124] drop-shadow-[0_6px_14px_rgba(20,2,40,0.45)]">
               <ArchTile />
               <div className="relative flex h-full flex-col items-center justify-center pt-1">
-                <div className="font-caps text-[1.65rem] font-extrabold leading-none tabular-nums text-marigold sm:text-[2.1rem]" suppressHydrationWarning>
+                <div className="font-sans text-[1.65rem] font-extrabold leading-none tabular-nums text-marigold sm:text-[2.1rem]" suppressHydrationWarning>
                   {p.v < 0 ? "--" : String(p.v).padStart(2, "0")}
                 </div>
                 <div className="mt-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-cream/90">{p.l}</div>

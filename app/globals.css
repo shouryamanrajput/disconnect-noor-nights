@@ -3,14 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --magenta: #8e1050;
-  --royal: #2f095d;
-  --marigold: #ffd43b;
+  --magenta: #e9227d;
+  --royal: #712494;
+  --marigold: #fbe212;
+  /* watercolour paper: big soft blotches + fine fibre grain (poster texture) */
+  --wash: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.00625 0.0109375' numOctaves='3' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.55 0 0 0 0 0.02 0 0 0 0 0.3 0 0 0 0.9 -0.4'/></filter><rect width='100%' height='100%' filter='url(%23w)'/></svg>");
+  --grain: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.55 0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 0.85 0 0 0 0 0.9 0 0 0 0.09 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 ::selection {
-  background: #ffd43b;
-  color: #27095e;
+  background: #fbe212;
+  color: #4e1470;
 }
 
 html {
@@ -31,31 +34,35 @@ html.lenis body {
   scroll-behavior: auto !important;
 }
 
-/* Warm magenta → plum, like the banner, with a very faint grain. */
+/* Poster hot pink on watercolour paper. */
 .bg-poster {
-  background-color: #8e1050;
+  background-color: #e9227d;
   background-image:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3 0 0 0 0 0 0 0 0 0 0.2 0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
-    radial-gradient(70% 60% at 50% 35%, rgba(189, 22, 86, 0.85), transparent 75%),
-    linear-gradient(180deg, #8e1050 0%, #7b0b4a 100%);
+    var(--grain),
+    var(--wash),
+    radial-gradient(70% 60% at 50% 35%, rgba(255, 70, 150, 0.35), transparent 75%),
+    linear-gradient(180deg, #e9227d 0%, #df1c76 100%);
 }
+/* Poster arch purple, same paper feel. */
 .bg-royal-tex {
-  background-color: #2a0858;
+  background-color: #712494;
   background-image:
-    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.15 0 0 0 0 0 0 0 0 0 0.3 0 0 0 0.1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
-    radial-gradient(60% 55% at 50% 40%, rgba(80, 20, 140, 0.55), transparent 75%),
-    linear-gradient(180deg, #2a0858 0%, #1f0644 100%);
+    var(--grain),
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='640' height='640'><filter id='w'><feTurbulence type='fractalNoise' baseFrequency='0.00625 0.0109375' numOctaves='3' seed='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.2 0 0 0 0 0.02 0 0 0 0 0.3 0 0 0 1.1 -0.45'/></filter><rect width='100%' height='100%' filter='url(%23w)'/></svg>"),
+    radial-gradient(60% 55% at 50% 40%, rgba(140, 50, 180, 0.45), transparent 75%),
+    linear-gradient(180deg, #712494 0%, #661f88 100%);
 }
 
-/* Hero: warm magenta core fading to plum edges, soft bokeh, floor glow. */
+/* Hero: the poster's flat hot pink with watercolour wash, soft bokeh. */
 .bg-hero {
-  background-color: #8e1050;
+  background-color: #e9227d;
   background-image:
-    radial-gradient(48% 46% at 42% 52%, rgba(214, 32, 98, 0.75), transparent 72%),
-    radial-gradient(38% 40% at 70% 50%, rgba(190, 22, 86, 0.6), transparent 72%),
-    radial-gradient(60% 50% at 0% 40%, rgba(110, 10, 60, 0.65), transparent 70%),
-    radial-gradient(60% 50% at 100% 20%, rgba(110, 6, 64, 0.7), transparent 70%),
-    linear-gradient(180deg, #7b0644 0%, #a4135a 40%, #ac1652 75%, #8e1050 100%);
+    var(--grain),
+    var(--wash),
+    radial-gradient(48% 46% at 42% 52%, rgba(255, 80, 160, 0.4), transparent 72%),
+    radial-gradient(60% 50% at 0% 40%, rgba(196, 22, 106, 0.35), transparent 70%),
+    radial-gradient(60% 50% at 100% 20%, rgba(196, 22, 106, 0.35), transparent 70%),
+    linear-gradient(180deg, #e2207a 0%, #e9227d 45%, #e9227d 100%);
 }
 .hero-bokeh {
   background-image:
@@ -73,8 +80,8 @@ html.lenis body {
   filter: blur(1.5px);
 }
 .hero-floor {
-  background: linear-gradient(180deg, rgba(255, 120, 160, 0) 0%, rgba(255, 120, 160, 0.1) 12%, rgba(120, 8, 60, 0.25) 100%);
-  border-top: 1px solid rgba(255, 170, 200, 0.12);
+  background: linear-gradient(180deg, rgba(255, 150, 200, 0) 0%, rgba(255, 150, 200, 0.1) 12%, rgba(160, 10, 80, 0.22) 100%);
+  border-top: 1px solid rgba(255, 190, 220, 0.18);
 }
 
 @layer components {
@@ -85,18 +92,32 @@ html.lenis body {
     @apply font-caps text-xs font-bold uppercase tracking-[0.28em] text-marigold sm:text-sm;
   }
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-full bg-marigold px-7 py-3.5 text-[15px] font-extrabold text-plum shadow-[0_6px_0_#c98e00,0_10px_30px_rgba(255,212,59,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#ffe066] active:translate-y-0.5 active:shadow-[0_2px_0_#c98e00];
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-marigold px-7 py-3.5 text-[15px] font-extrabold text-plum shadow-[0_6px_0_#356428,0_10px_30px_rgba(251,226,18,0.3)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#fff05a] active:translate-y-0.5 active:shadow-[0_2px_0_#356428];
   }
   .btn-outline {
     @apply inline-flex items-center justify-center gap-2 rounded-full border-2 border-marigold/80 bg-plum/30 px-6 py-3 text-[15px] font-bold text-marigold backdrop-blur-sm transition-colors duration-200 hover:bg-marigold hover:text-plum;
   }
+  /* Poster title: flat lemon yellow with a hard forest-green drop shadow. */
   .gold-text {
-    color: #ffd43b;
-    background: linear-gradient(180deg, #fff1a8 0%, #ffd43b 38%, #f5b700 70%, #e59a00 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 0 #7a3b00) drop-shadow(0 6px 14px rgba(20, 2, 40, 0.45));
+    color: #fbe212;
+    text-shadow: -2px 3px 0 #356428, -1px 1px 0 #356428, 0 8px 18px rgba(60, 8, 80, 0.35);
+  }
+  .title-lg {
+    text-shadow: -3px 4px 0 #356428, -1.5px 2px 0 #356428, 0 10px 22px rgba(60, 8, 80, 0.35);
+  }
+  /* Coral pill with an orange double border (dress-code note on the poster). */
+  .coral-pill {
+    background: #e2247c;
+    border: 2px solid #fb8e32;
+    box-shadow: 0 0 0 3px #e2247c, 0 0 0 5px #fb8e32, 0 8px 20px rgba(60, 8, 80, 0.3);
+    color: #ffce3c;
+  }
+  .wordmark {
+    font-family: var(--font-logo), Georgia, serif;
+    font-weight: 900;
+    font-variation-settings: "SOFT" 100;
+    color: #d1fa87;
+    letter-spacing: -0.01em;
   }
   /* tiny twinkles on hover around every invite button */
   .btn-spark {
@@ -113,7 +134,7 @@ html.lenis body {
     opacity: 0;
     background: #fff6c9;
     clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
-    filter: drop-shadow(0 0 4px #ffd43b);
+    filter: drop-shadow(0 0 4px #fbe212);
   }
   .btn-spark::before { top: -6px; left: 14%; }
   .btn-spark::after { bottom: -5px; right: 12%; width: 7px; height: 7px; }
@@ -246,4 +267,16 @@ html.lenis body {
   .disco-speck {
     animation: none !important;
   }
+}
+
+/* Registration panel: a tall jharokha arch, like the poster's purple arch. */
+.register-arch {
+  border-radius: 50% 50% 28px 28px / 150px 150px 28px 28px;
+}
+.register-arch-inner {
+  border-radius: 50% 50% 20px 20px / 140px 140px 20px 20px;
+}
+@media (max-width: 639px) {
+  .register-arch { border-radius: 50% 50% 22px 22px / 110px 110px 22px 22px; }
+  .register-arch-inner { border-radius: 50% 50% 16px 16px / 102px 102px 16px 16px; }
 }
