@@ -55,32 +55,21 @@ function validate(v: Values): Errors {
   return e;
 }
 
-function buildBody(v: Values) {
-  const { entries } = site.googleForm;
-  const body = new URLSearchParams();
-  const put = (id: string, value: string) => {
-    if (id && value) body.append(id, value);
-  };
-  put(entries.name, v.name.trim());
-  put(entries.ageGroup, v.ageGroup);
-  put(entries.mobile, `+91${normaliseMobile(v.mobile)}`);
-  put(entries.email, v.email.trim());
+/** Payload for the Apps Script web app (scripts/sheet-apps-script.gs). */
+function buildBody(v: Values, company: string) {
   const ig = stripAt(v.instagram);
-  put(entries.instagram, ig ? `@${ig}` : "");
-  if (v.heardFrom === "Other") {
-    if (entries.heardFromOther) {
-      // A separate short-answer question holds the "Other" text.
-      put(entries.heardFrom, "Other");
-      put(entries.heardFromOther, v.heardFromOther.trim());
-    } else {
-      // Google Forms' built-in "Other" option.
-      put(entries.heardFrom, "__other_option__");
-      put(`${entries.heardFrom}.other_option_response`, v.heardFromOther.trim());
-    }
-  } else put(entries.heardFrom, v.heardFrom);
-  put(entries.why, v.why.trim());
-  put(entries.comfortable, v.comfortable);
-  return body;
+  return new URLSearchParams({
+    name: v.name.trim(),
+    ageGroup: v.ageGroup,
+    mobile: `+91${normaliseMobile(v.mobile)}`,
+    email: v.email.trim(),
+    instagram: ig ? `@${ig}` : "",
+    heardFrom: v.heardFrom === "Other" ? `Other: ${v.heardFromOther.trim()}` : v.heardFrom,
+    why: v.why.trim(),
+    comfortable: v.comfortable,
+    sourcePage: window.location.origin + window.location.pathname,
+    company, // honeypot: real people leave it empty
+  });
 }
 
 /* ── small building blocks ─────────────────────────────── */
@@ -154,6 +143,7 @@ export default function RegisterForm() {
   const [status, setStatus] = useState<Status>("idle");
   const submitRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
+  const honeypotRef = useRef<HTMLInputElement>(null);
 
   const set = <K extends keyof Values>(k: K, val: Values[K]) => {
     const next = { ...v, [k]: val };
@@ -179,8 +169,8 @@ export default function RegisterForm() {
       el?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    const { formAction } = site.googleForm;
-    if (!formAction) {
+    const endpoint = site.sheetEndpoint;
+    if (!endpoint) {
       // Not wired up yet: no network call.
       if (site.links.register) window.open(site.links.register, "_blank", "noopener,noreferrer");
       else setStatus("soon");
@@ -188,9 +178,9 @@ export default function RegisterForm() {
     }
     setStatus("sending");
     try {
-      // Google Forms doesn't send CORS headers, so the response is opaque;
-      // reaching here means the request was delivered.
-      await fetch(formAction, { method: "POST", mode: "no-cors", body: buildBody(v) });
+      // Apps Script doesn't send CORS headers, so the response is opaque;
+      // reaching here means the request was delivered (a network failure throws).
+      await fetch(endpoint, { method: "POST", mode: "no-cors", body: buildBody(v, honeypotRef.current?.value ?? "") });
       burst();
       setStatus("done");
       requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
@@ -288,6 +278,11 @@ export default function RegisterForm() {
                       {status === "soon" && <p className="coral-pill mt-5 rounded-2xl px-4 py-3 text-center font-sans text-[14.5px] font-bold">{r.soonMessage}</p>}
                       {status === "error" && <p className="mt-4 text-center text-[14px] font-bold text-[#FFE27A]">Couldn’t send just now — check your connection and try again, or DM us on Instagram.</p>}
                     </div>
+                  </div>
+                  {/* honeypot: hidden from people and screen readers; bots tend to fill it */}
+                  <div aria-hidden className="absolute -left-[10000px] top-auto h-px w-px overflow-hidden">
+                    <label htmlFor="rf-company">Company</label>
+                    <input ref={honeypotRef} id="rf-company" name="company" type="text" tabIndex={-1} autoComplete="off" defaultValue="" />
                   </div>
                 </form>
               )}

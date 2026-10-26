@@ -77,35 +77,12 @@ export const site = {
   },
 
   /**
-   * GOOGLE FORM WIRING
-   * 1. Open your Google Form → Send → link → copy the viewform URL.
-   * 2. Run:  node scripts/google-form-entries.mjs "<viewform URL>"
-   *    It prints the formResponse URL and every question's entry ID.
-   * 3. Paste them below. While formAction is "", the form shows a friendly
-   *    "registrations open soon" message and makes no network call
-   *    (or opens links.register instead, if that is set).
-   * The Google Form questions should be: short answer for name, mobile,
-   * email, instagram, why; multiple choice for ageGroup, heardFrom (with the
-   * "Other" option switched on) and comfortable — with the exact option texts
-   * from the lists below.
+   * GOOGLE SHEET WIRING (Apps Script web app, see SHEET-SETUP.md)
+   * Paste the Web app's /exec URL below. While it is "", the form shows a
+   * friendly "registrations open soon" message and makes no network call
+   * (or opens links.register instead, if that is set).
    */
-  googleForm: {
-    formAction: "", // CONFIRM: https://docs.google.com/forms/d/e/<FORM_ID>/formResponse
-    entries: {
-      name: "entry.1000000001", // CONFIRM
-      ageGroup: "entry.1000000002", // CONFIRM
-      mobile: "entry.1000000003", // CONFIRM (sent as +91XXXXXXXXXX)
-      email: "entry.1000000004", // CONFIRM (or leave "" if you use Google's own "collect emails")
-      instagram: "entry.1000000005", // CONFIRM (sent as @handle)
-      heardFrom: "entry.1000000006", // CONFIRM
-      // Leave "" if "Other" is the built-in Other option of the heardFrom
-      // question (the text is then sent as <heardFrom>.other_option_response).
-      // Set it only if you made a separate short-answer question for it.
-      heardFromOther: "", // CONFIRM
-      why: "entry.1000000007", // CONFIRM
-      comfortable: "entry.1000000008", // CONFIRM
-    },
-  },
+  sheetEndpoint: "", // CONFIRM: https://script.google.com/macros/s/<DEPLOYMENT_ID>/exec
 
   form: {
     ageGroups: ["18–20", "21–24", "25–29", "30+"],
@@ -120,8 +97,8 @@ export const site = {
   },
 
   links: {
-    // Optional fallback: if googleForm.formAction is still "" but this is set,
-    // submitting the on-page form opens this link (e.g. the Google Form itself).
+    // Optional fallback: if sheetEndpoint is still "" but this is set,
+    // submitting the on-page form opens this link instead.
     register: "", // CONFIRM (optional)
     instagram: "https://www.instagram.com/disconnectfr",
     instagramDM: "https://ig.me/m/disconnectfr", // CONFIRM: opens a DM with @disconnectfr
