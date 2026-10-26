@@ -2,9 +2,10 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { site } from "@/lib/config";
-import { ACCEPTED, compressImage, mimeOf, type Compressed } from "@/lib/compressImage";
+import { compressImage, MAX_INPUT, mimeOf, type Compressed } from "@/lib/compressImage";
+import { loadSession, touchSession, type Reg } from "@/lib/session";
 
-export type Reg = { regId: string; name: string; mobile: string; email: string };
+export type { Reg };
 
 const fmtKB = (b: number) => (b >= 1024 * 1024 ? `${(b / 1024 / 1024).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`);
 
@@ -16,7 +17,32 @@ function upiLink(regId: string) {
 }
 
 /** Step 2: QR / UPI details, screenshot upload, submit to the Apps Script. */
-export default function PaymentStep({ reg, endpoint, onDone, onRestart }: { reg: Reg; endpoint: string; onDone: (from?: DOMRect) => void; onRestart: () => void }) {
+function SessionTimer({ onExpire }: { onExpire: () => void }) {
+  const [left, setLeft] = useState<number | null>(null);
+  useEffect(() => {
+    const tick = () => {
+      const s = loadSession();
+      if (!s || s === "expired") return onExpire();
+      setLeft(s.left);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [onExpire]);
+  if (left === null) return null;
+  const sec = Math.max(0, Math.ceil(left / 1000));
+  const warn = sec <= 120;
+  const mmss = `${String(Math.floor(sec / 60)).padStart(2, "0")}:${String(sec % 60).padStart(2, "0")}`;
+  return (
+    <p data-session-timer className={`mx-auto mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[13px] font-semibold ${warn ? "bg-[#FFE27A] text-plum" : "bg-night/40 text-cream/80"}`} role={warn ? "alert" : undefined}>
+      <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5 fill-current"><path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm1 4v4.6l3 1.8-.8 1.3L9 11.4V6h2Z" /></svg>
+      Session expires in <span className="font-mono tabular-nums">{mmss}</span>
+      {warn && <span className="sr-only">. Less than 2 minutes left, please upload soon.</span>}
+    </p>
+  );
+}
+
+export default function PaymentStep({ reg, endpoint, onDone, onRestart, onExpire }: { reg: Reg; endpoint: string; onDone: (from?: DOMRect) => void; onRestart: () => void; onExpire: () => void }) {
   const p = site.payment;
   const [qrOk, setQrOk] = useState(true);
   const [shot, setShot] = useState<Compressed | null>(null);
@@ -25,6 +51,7 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart }: { reg:
   const [copied, setCopied] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const submitRef = useRef<HTMLButtonElement>(null);
+  const sending = useRef(false);
 
   useEffect(() => () => { if (shot?.previewUrl) URL.revokeObjectURL(shot.previewUrl); }, [shot]);
 
@@ -33,19 +60,20 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart }: { reg:
     e.target.value = ""; // allow picking the same file again
     if (!file) return;
     setError("");
-    if (!ACCEPTED.includes(mimeOf(file))) {
+    touchSession();
+    if (mimeOf(file).includes("svg")) {
       setError("Please choose an image (JPG, PNG, WebP or HEIC).");
       return;
     }
-    if (file.size > 25 * 1024 * 1024) {
-      setError("That file is too large. Please upload a screenshot.");
+    if (file.size > MAX_INPUT) {
+      setError("That file is over 10 MB. Please upload a screenshot.");
       return;
     }
     setBusy("reading");
     try {
       setShot(await compressImage(file));
-    } catch {
-      setError("Couldn’t read that image. Please try a JPG or PNG screenshot.");
+    } catch (err) {
+      setError((err as Error).message === "type" ? "Please choose an image (JPG, PNG, WebP or HEIC)." : "Couldn’t read that image. Please try a JPG or PNG screenshot.");
     } finally {
       setBusy("");
     }
@@ -63,11 +91,16 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart }: { reg:
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (sending.current) return;
+    const s = loadSession();
+    if (s === "expired") return onExpire();
+    touchSession();
     if (!shot) {
       setError("Please add your payment screenshot first.");
       fileRef.current?.focus();
       return;
     }
+    sending.current = true;
     setBusy("sending");
     setError("");
     const ext = shot.mimeType === "image/jpeg" ? "jpg" : shot.mimeType.split("/")[1];
@@ -84,20 +117,23 @@ export default function PaymentStep({ reg, endpoint, onDone, onRestart }: { reg:
     });
     try {
       // Opaque (no-cors) response, same as step 1: reaching here = delivered.
-      await fetch(endpoint, { method: "POST", mode: "no-cors", body });
+      await fetch(endpoint, { method: "POST", mode: "no-cors", body, credentials: "omit" });
       onDone(submitRef.current?.getBoundingClientRect());
     } catch {
       setError("Couldn’t upload just now. Check your connection and try again, or DM us the screenshot on Instagram.");
       setBusy("");
+    } finally {
+      sending.current = false;
     }
   }
 
   return (
-    <form noValidate onSubmit={onSubmit} className="mx-auto mt-7 max-w-[460px] text-center" aria-labelledby="pay-title">
+    <form noValidate onSubmit={onSubmit} onPointerDown={touchSession} onKeyDown={touchSession} className="mx-auto mt-7 max-w-[460px] text-center" aria-labelledby="pay-title">
       <p className="text-[14px] text-cream/90">
         Thanks, {reg.name.split(" ")[0]}! Your details are in. Registration ID{" "}
         <span className="whitespace-nowrap rounded-md bg-night/50 px-1.5 py-0.5 font-mono text-[13.5px] font-bold text-marigold">{reg.regId}</span>
       </p>
+      <SessionTimer onExpire={onExpire} />
       <h3 id="pay-title" className="gold-text title-lg mt-5 font-display text-[2rem] uppercase leading-tight sm:text-[2.4rem]">{p.title}</h3>
       <p className="mt-1 font-sans text-[2rem] font-extrabold leading-none text-cream">{p.amount}</p>
       <p className="mt-2 text-[14.5px] text-cream/90">

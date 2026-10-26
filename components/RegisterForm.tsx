@@ -10,7 +10,8 @@ import InstagramIcon from "@/components/InstagramIcon";
 import { EnvelopeIcon } from "@/components/Icons";
 import { Diya, Ornament } from "@/components/Decor";
 import FestiveBackdrop from "@/components/FestiveBackdrop";
-import PaymentStep, { type Reg } from "@/components/PaymentStep";
+import PaymentStep from "@/components/PaymentStep";
+import { clearSession, fmtWait, loadSession, rateLimitWait, recordSubmit, reRegisterWait, rememberMobile, saveSession, type Reg } from "@/lib/session";
 
 type Values = {
   name: string;
@@ -25,7 +26,10 @@ type Values = {
 };
 type Errors = Partial<Record<keyof Values, string>>;
 type Status = "idle" | "sending" | "pay" | "done" | "soon" | "error";
-const STORE_KEY = "dd-registration"; // sessionStorage: lets a visitor finish paying after a reload
+const MIN_FILL_MS = 3000; // faster than this from page load = a bot: skip silently
+const LIMITS: Record<keyof Values, number> = { name: 80, ageGroup: 20, mobile: 16, email: 120, instagram: 31, heardFrom: 40, heardFromOther: 100, why: 200, comfortable: 60 };
+/** Drops control and bidi-override characters, caps length. */
+const sanitize = (k: keyof Values, s: string) => s.replace(/[\u0000-\u001F\u007F-\u009F\u200B\u202A-\u202E\u2066-\u2069\uFEFF]/g, "").slice(0, LIMITS[k]);
 
 const empty: Values = { name: "", ageGroup: "", mobile: "", email: "", instagram: "", heardFrom: "", heardFromOther: "", why: "", comfortable: "" };
 // Order the fields are checked in, so focus lands on the first problem.
@@ -43,17 +47,19 @@ const stripAt = (v: string) => v.replace(/^[\s@]+/, "").replace(/\s/g, "");
 function validate(v: Values): Errors {
   const e: Errors = {};
   if (v.name.trim().length < 2) e.name = "Please tell us your name.";
+  else if (!/^[\p{L}\p{M}][\p{L}\p{M} .'’-]{1,79}$/u.test(v.name.trim())) e.name = "Please use letters only in your name.";
   if (!v.ageGroup) e.ageGroup = "Please pick your age group.";
   const m = normaliseMobile(v.mobile);
   if (!m) e.mobile = "Please add your mobile number.";
   else if (!/^[6-9]\d{9}$/.test(m)) e.mobile = "Enter a valid 10-digit Indian mobile number.";
   if (!v.email.trim()) e.email = "Please add your email.";
-  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) e.email = "That email doesn’t look right.";
+  else if (v.email.trim().length > 120 || !/^[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/.test(v.email.trim())) e.email = "That email doesn’t look right.";
   const ig = stripAt(v.instagram);
   if (ig && !/^[A-Za-z0-9._]{1,30}$/.test(ig)) e.instagram = "Handles use letters, numbers, dots and underscores only.";
-  if (!v.heardFrom) e.heardFrom = "Please choose one.";
+  if (!v.heardFrom || !site.form.heardFrom.includes(v.heardFrom)) e.heardFrom = "Please choose one.";
   else if (v.heardFrom === "Other" && !v.heardFromOther.trim()) e.heardFromOther = "Tell us where you heard about us.";
-  if (!v.comfortable) e.comfortable = "Please choose one.";
+  if (!v.comfortable || !site.form.comfortable.includes(v.comfortable)) e.comfortable = "Please choose one.";
+  if (v.ageGroup && !site.form.ageGroups.includes(v.ageGroup)) e.ageGroup = "Please pick your age group.";
   return e;
 }
 
@@ -63,15 +69,6 @@ function newRegId() {
   const bytes = new Uint8Array(6);
   crypto.getRandomValues(bytes);
   return "DSC-" + Array.from(bytes, (b) => abc[b % abc.length]).join("");
-}
-
-function readStored(): Reg | null {
-  try {
-    const r = JSON.parse(sessionStorage.getItem(STORE_KEY) || "null");
-    return r && /^DSC-[A-Z0-9]{6}$/.test(r.regId) && r.mobile ? (r as Reg) : null;
-  } catch {
-    return null;
-  }
 }
 
 /* step indicator: 1 Details, 2 Payment */
@@ -191,20 +188,42 @@ export default function RegisterForm() {
   const panelRef = useRef<HTMLDivElement>(null);
   const honeypotRef = useRef<HTMLInputElement>(null);
   const [reg, setReg] = useState<Reg | null>(null);
+  const [notice, setNotice] = useState("");
+  const mountedAt = useRef(0);
+  const sending = useRef(false); // duplicate-submit guard (state updates are async)
 
-  // Came back after a reload mid-payment? Resume at step 2.
+  const expire = () => {
+    clearSession();
+    setReg(null);
+    setStatus("idle");
+    setNotice("Your session expired, please fill the form again.");
+  };
+
+  // Came back after a reload mid-payment? Resume at step 2 unless it expired.
   useEffect(() => {
-    const stored = readStored();
-    if (stored) {
-      setReg(stored);
+    mountedAt.current = Date.now();
+    const s = loadSession();
+    if (s === "expired") setNotice("Your session expired, please fill the form again.");
+    else if (s) {
+      setReg(s.reg);
       setStatus("pay");
     }
   }, []);
+  // Re-check when the tab becomes visible again (phones suspend timers).
+  useEffect(() => {
+    if (status !== "pay") return;
+    const onVis = () => {
+      if (document.visibilityState === "visible" && loadSession() === "expired") expire();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    return () => document.removeEventListener("visibilitychange", onVis);
+  }, [status]);
 
   const scrollToPanel = () => requestAnimationFrame(() => panelRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
 
   const set = <K extends keyof Values>(k: K, val: Values[K]) => {
-    const next = { ...v, [k]: val };
+    const next = { ...v, [k]: sanitize(k, val) };
+    if (notice) setNotice("");
     setV(next);
     if (tried) setErrors(validate(next)); // live re-check once they've tried submitting
     if (status === "error" || status === "soon") setStatus("idle");
@@ -217,6 +236,7 @@ export default function RegisterForm() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (sending.current) return;
     setTried(true);
     const errs = validate(v);
     setErrors(errs);
@@ -234,40 +254,55 @@ export default function RegisterForm() {
       else setStatus("soon");
       return;
     }
+    // Bots: honeypot filled or submitted impossibly fast. Skip silently.
+    if ((honeypotRef.current?.value ?? "") !== "" || Date.now() - mountedAt.current < MIN_FILL_MS) {
+      setStatus("done");
+      return;
+    }
+    const mobile = `+91${normaliseMobile(v.mobile)}`;
+    const rl = rateLimitWait();
+    if (rl > 0) {
+      setNotice(`Too many attempts from this device. Please try again in ${fmtWait(rl)}, or DM us on Instagram.`);
+      return;
+    }
+    const again = await reRegisterWait(mobile);
+    if (again > 0) {
+      setNotice(`This number was just registered from this device. Please wait ${fmtWait(again)} before registering it again, or DM us on Instagram.`);
+      return;
+    }
+    sending.current = true;
+    setNotice("");
     setStatus("sending");
     try {
+      recordSubmit();
       // Apps Script doesn't send CORS headers, so the response is opaque;
       // reaching here means the request was delivered (a network failure throws).
       const regId = newRegId();
-      const body = buildBody(v, honeypotRef.current?.value ?? "", regId);
-      await fetch(endpoint, { method: "POST", mode: "no-cors", body });
-      const next: Reg = { regId, name: body.get("name") || "", mobile: body.get("mobile") || "", email: body.get("email") || "" };
-      try {
-        sessionStorage.setItem(STORE_KEY, JSON.stringify(next));
-      } catch {
-        /* private mode: the step still works, it just won't survive a reload */
-      }
+      const body = buildBody(v, "", regId);
+      await fetch(endpoint, { method: "POST", mode: "no-cors", body, credentials: "omit", referrerPolicy: "strict-origin-when-cross-origin" });
+      const next: Reg = { regId, name: body.get("name") || "", mobile, email: body.get("email") || "" };
+      saveSession(next);
+      await rememberMobile(mobile);
       setReg(next);
       setStatus("pay");
       scrollToPanel();
     } catch {
       setStatus("error");
+    } finally {
+      sending.current = false;
     }
   }
 
   function paid(from?: DOMRect) {
     if (from) launchFireworks(from.left + from.width / 2, from.top + from.height / 2);
     else burst();
-    try {
-      sessionStorage.removeItem(STORE_KEY);
-    } catch {}
+    clearSession();
     setStatus("done");
     scrollToPanel();
   }
   function restart() {
-    try {
-      sessionStorage.removeItem(STORE_KEY);
-    } catch {}
+    clearSession();
+    setNotice("");
     setReg(null);
     setV(empty);
     setErrors({});
@@ -304,7 +339,7 @@ export default function RegisterForm() {
               <Steps step={status === "done" ? 3 : status === "pay" ? 2 : 1} />
 
               {status === "pay" && reg ? (
-                <PaymentStep reg={reg} endpoint={site.sheetEndpoint} onDone={paid} onRestart={restart} />
+                <PaymentStep reg={reg} endpoint={site.sheetEndpoint} onDone={paid} onRestart={restart} onExpire={expire} />
               ) : status === "done" ? (
                 <div role="status" className="mx-auto mt-8 max-w-[460px] text-center">
                   <div className="coral-pill mx-auto inline-block rounded-full px-6 py-2 font-caps text-[13px] font-bold uppercase tracking-[0.06em]">Request received</div>
@@ -314,6 +349,11 @@ export default function RegisterForm() {
                 </div>
               ) : (
                 <form noValidate onSubmit={onSubmit} className="mx-auto mt-8 max-w-[560px] space-y-7 sm:mt-10" aria-describedby="rf-note">
+                  {notice && (
+                    <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[14.5px] font-bold">
+                      {notice}
+                    </p>
+                  )}
                   <Field id="rf-name" n="01" label="What’s your name?" error={errors.name}>
                     <input id="rf-name" name="name" type="text" autoComplete="name" required aria-required aria-invalid={!!errors.name} aria-describedby={desc("name")} value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Your full name" maxLength={80} className={inputCls(errors.name)} />
                   </Field>
@@ -328,7 +368,7 @@ export default function RegisterForm() {
                       </div>
                     </Field>
                     <Field id="rf-email" label="Email" error={errors.email}>
-                      <input id="rf-email" name="email" type="email" inputMode="email" autoComplete="email" required aria-required aria-invalid={!!errors.email} aria-describedby={desc("email")} value={v.email} onChange={(e) => set("email", e.target.value)} placeholder="you@example.com" className={inputCls(errors.email)} />
+                      <input id="rf-email" name="email" type="email" inputMode="email" autoComplete="email" required aria-required aria-invalid={!!errors.email} aria-describedby={desc("email")} value={v.email} onChange={(e) => set("email", e.target.value)} placeholder="you@example.com" maxLength={120} className={inputCls(errors.email)} />
                     </Field>
                   </div>
 
@@ -381,10 +421,10 @@ export default function RegisterForm() {
 
               <p id="rf-note" className="mx-auto mt-7 max-w-[520px] text-center text-[13.5px] leading-relaxed text-cream/85">{r.note}</p>
               <div className="mt-2 flex flex-wrap items-center justify-center gap-x-3 gap-y-0 font-semibold sm:gap-x-6">
-                <a href={site.links.whatsapp} target="_blank" rel="noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
+                <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <WhatsAppIcon className="h-5 w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
                 </a>
-                <a href={site.links.instagramDM} target="_blank" rel="noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
+                <a href={site.links.instagramDM} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[15px] text-marigold underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
                   <InstagramIcon className="h-5 w-5" /> <span className="sm:hidden">Instagram DM</span><span className="hidden sm:inline">{site.ctas.instagram}</span>
                 </a>
               </div>

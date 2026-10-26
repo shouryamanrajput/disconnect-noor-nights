@@ -102,6 +102,14 @@ export const site = {
     body: "Use any UPI app (GPay, PhonePe, Paytm, BHIM…). The QR already has the amount filled in.",
   },
 
+  /**
+   * In-progress registration (step 2 "Pay to confirm") is kept in this tab's
+   * sessionStorage only: regId, name, mobile, email (never the screenshot).
+   * It expires ttlMinutes after registering, or after idleMinutes without
+   * activity, and the visitor is asked to fill the form again.
+   */
+  session: { ttlMinutes: 30, idleMinutes: 15 },
+
   form: {
     ageGroups: ["18–20", "21–24", "25–29", "30+"],
     heardFrom: ["Instagram", "Existing member", "Friend's referral", "Other"],

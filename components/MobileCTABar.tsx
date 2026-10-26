@@ -26,7 +26,7 @@ export default function MobileCTABar() {
           <p className="truncate font-display text-[14.5px] leading-tight text-marigold">Diwali House Party</p>
           <p className="truncate text-[11.5px] font-semibold text-cream/85">31 Oct · 5:30 PM</p>
         </div>
-        <a href={site.links.whatsapp} target="_blank" rel="noreferrer" aria-label={site.ctas.whatsapp} className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-marigold/70 text-marigold">
+        <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" aria-label={site.ctas.whatsapp} className="grid h-11 w-11 shrink-0 place-items-center rounded-full border-2 border-marigold/70 text-marigold">
           <WhatsAppIcon className="h-5 w-5" />
         </a>
         <InviteButton iconClass="h-4 w-4" className="min-h-[44px] shrink-0 gap-1.5 px-3.5 py-2.5 text-[13.5px] shadow-[0_4px_0_#356428]" />

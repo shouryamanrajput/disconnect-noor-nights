@@ -10,6 +10,19 @@ export const ACCEPTED = ["image/jpeg", "image/png", "image/webp", "image/heic", 
 const MAX_SIDE = 1280;
 const TARGET = 500 * 1024;
 const RAW_FALLBACK_MAX = 4 * 1024 * 1024;
+export const MAX_INPUT = 10 * 1024 * 1024;
+
+/** Real type from the file's first bytes (ignores the name / declared type). SVG and anything else → "". */
+export async function sniff(file: File): Promise<string> {
+  const b = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+  const str = (i: number, n: number) => String.fromCharCode(...b.slice(i, i + n));
+  if (b.length < 12) return "";
+  if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return "image/jpeg";
+  if (b[0] === 0x89 && str(1, 3) === "PNG") return "image/png";
+  if (str(0, 4) === "RIFF" && str(8, 4) === "WEBP") return "image/webp";
+  if (str(4, 4) === "ftyp" && /^(heic|heix|hevc|heim|heis|mif1|msf1)$/.test(str(8, 4))) return str(8, 4) === "mif1" || str(8, 4) === "msf1" ? "image/heif" : "image/heic";
+  return "";
+}
 
 export function mimeOf(file: File) {
   const t = (file.type || "").toLowerCase();
@@ -44,7 +57,10 @@ function blobToBase64(b: Blob): Promise<string> {
 }
 
 export async function compressImage(file: File): Promise<Compressed> {
-  const mime = mimeOf(file);
+  if (file.size > MAX_INPUT) throw new Error("size");
+  const declared = mimeOf(file);
+  if (declared.includes("svg")) throw new Error("type");
+  const mime = await sniff(file); // trust the bytes, not the extension
   if (!ACCEPTED.includes(mime)) throw new Error("type");
   let img: HTMLImageElement;
   try {
