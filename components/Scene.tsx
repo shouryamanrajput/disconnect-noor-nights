@@ -6,15 +6,12 @@ import FestiveBackdrop from "@/components/FestiveBackdrop";
 import InviteButton from "@/components/InviteButton";
 
 // One line icon per card, in the order of site.scene.cards:
-// diya, headphones, cloche, golgappa bowl, playing cards, music notes,
-// two sparkles, heart.
+// diya, headphones, cloche, playing cards, two sparkles, heart.
 const cardIcons = [
   "M3 13h18c0 4-4 6.5-9 6.5S3 17 3 13ZM12 3.5c1.6 2 2.2 3.3 2.2 4.5a2.2 2.2 0 0 1-4.4 0c0-1.2.6-2.5 2.2-4.5Z",
   "M4 15v-3a8 8 0 0 1 16 0v3M4 15a2 2 0 0 1 2-2h1v7H6a2 2 0 0 1-2-2v-3ZM20 15a2 2 0 0 0-2-2h-1v7h1a2 2 0 0 0 2-2v-3Z",
   "M3 18h18M5 18a7 7 0 0 1 14 0M12 9V7M10.5 7h3",
-  "M3.5 12h17a8.5 8.5 0 0 1-17 0ZM7 12a2.5 2.5 0 0 1 5 0M12 12a2.5 2.5 0 0 1 5 0M9.5 8.5a2.5 2.5 0 0 1 5 0",
   "M9 3h9a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1ZM5.5 6.5 4 7l3.5 13.5 6-1.5M13.5 7.5c-1.3 1.3-2 2.4-2 3.3a2 2 0 0 0 4 0c0-.9-.7-2-2-3.3Z",
-  "M9 18V5l11-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM20 16a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
   "M9 3c.4 3.4 2.2 5.2 5.6 5.6-3.4.4-5.2 2.2-5.6 5.6-.4-3.4-2.2-5.2-5.6-5.6C6.8 8.2 8.6 6.4 9 3ZM17.5 13c.3 2 1.3 3 3.3 3.3-2 .3-3 1.3-3.3 3.3-.3-2-1.3-3-3.3-3.3 2-.3 3-1.3 3.3-3.3Z",
   "M12 20s-7-4.4-9-9a4.8 4.8 0 0 1 9-3 4.8 4.8 0 0 1 9 3c-2 4.6-9 9-9 9Z",
 ];
@@ -82,7 +79,8 @@ function HeliosSticker() {
 // dress-code strip.
 // Phones: first and last cards full width (photo beside text), the rest 2-up
 // with the photo on top. Tablets: photo beside text throughout.
-// Desktop: 3×3 bento — the portrait decor photo as a tall card on the left.
+// Desktop: the portrait decor photo as a tall card beside a 2×2, and the last
+// card as a full-width strip underneath.
 export default function Scene() {
   const sc = site.scene;
   const last = sc.cards.length - 1;
@@ -105,12 +103,12 @@ export default function Scene() {
             const layout = feature
               ? "col-span-2 grid grid-cols-[46%_1fr] sm:grid-cols-[42%_1fr] lg:col-span-1 lg:row-span-2 lg:flex lg:flex-col"
               : wide
-                ? "col-span-2 grid grid-cols-[46%_1fr] sm:grid-cols-[42%_1fr] lg:col-span-1 lg:flex lg:flex-col"
+                ? "col-span-2 grid grid-cols-[46%_1fr] sm:grid-cols-[42%_1fr] lg:col-span-3 lg:grid-cols-[38%_1fr]"
                 : "flex flex-col sm:grid sm:grid-cols-[44%_1fr] lg:flex";
             const photo = feature
               ? "min-h-[180px] sm:min-h-[240px] lg:min-h-[300px] lg:flex-1"
               : wide
-                ? "min-h-[160px] sm:min-h-[210px] lg:aspect-[16/10] lg:min-h-0"
+                ? "min-h-[160px] sm:min-h-[210px] lg:min-h-[250px]"
                 : "aspect-[4/3] sm:aspect-auto sm:min-h-[170px] lg:aspect-[16/10] lg:min-h-0";
             return (
               <li
@@ -124,13 +122,13 @@ export default function Scene() {
                     src={c.image}
                     alt={c.alt}
                     fill
-                    sizes={wide ? "(min-width: 1024px) 380px, (min-width: 640px) 42vw, 46vw" : "(min-width: 1024px) 380px, (min-width: 640px) 40vw, 50vw"}
+                    sizes={wide ? "(min-width: 1024px) 500px, (min-width: 640px) 42vw, 46vw" : "(min-width: 1024px) 380px, (min-width: 640px) 40vw, 50vw"}
                     className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.06]"
                   />
                   {/* soft shade toward the panel so the photo sits into the frame */}
-                  <div aria-hidden className={`pointer-events-none absolute inset-0 ${wide ? "bg-gradient-to-r from-transparent from-60% to-[rgba(51,9,74,0.35)] lg:bg-gradient-to-b" : "bg-gradient-to-b from-transparent from-60% to-[rgba(51,9,74,0.35)] sm:bg-gradient-to-r lg:bg-gradient-to-b"}`} />
+                  <div aria-hidden className={`pointer-events-none absolute inset-0 ${feature ? "bg-gradient-to-r from-transparent from-60% to-[rgba(51,9,74,0.35)] lg:bg-gradient-to-b" : wide ? "bg-gradient-to-r from-transparent from-60% to-[rgba(51,9,74,0.35)]" : "bg-gradient-to-b from-transparent from-60% to-[rgba(51,9,74,0.35)] sm:bg-gradient-to-r lg:bg-gradient-to-b"}`} />
                 </div>
-                <div className={`flex flex-1 flex-col justify-center px-3 py-3 sm:px-5 sm:py-4 lg:justify-start ${feature ? "lg:flex-none lg:py-5" : ""} ${coral ? "bg-gradient-to-br from-coral to-rani" : "bg-plum/60"}`}>
+                <div className={`flex flex-1 flex-col justify-center px-3 py-3 sm:px-5 sm:py-4 ${wide && !feature ? "lg:px-10" : "lg:justify-start"} ${feature ? "lg:flex-none lg:py-5" : ""} ${coral ? "bg-gradient-to-br from-coral to-rani" : "bg-plum/60"}`}>
                   <span className={`grid shrink-0 place-items-center rounded-md bg-marigold text-plum transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110 ${feature ? "h-7 w-7 sm:h-9 sm:w-9 sm:rounded-lg" : "h-6 w-6 sm:h-8 sm:w-8 sm:rounded-lg"}`}>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className={feature ? "h-4 w-4 sm:h-5 sm:w-5" : "h-3.5 w-3.5 sm:h-[18px] sm:w-[18px]"} aria-hidden>
                       <path d={cardIcons[i]} />
