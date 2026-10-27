@@ -144,31 +144,38 @@ function ErrorText({ id, msg }: { id: string; msg?: string }) {
   );
 }
 const inputBase =
-  "block w-full h-11 rounded-xl border-2 bg-cream px-3.5 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
+  "block w-full h-10 rounded-xl border-2 bg-cream px-3 py-1.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 sm:h-11 sm:px-3.5 sm:py-2 max-sm:placeholder:text-[13.5px] max-sm:placeholder:text-plum/40 outline-none transition-colors focus:border-marigold focus:ring-4 focus:ring-marigold/30";
 const inputCls = (bad?: string) => `${inputBase} ${bad ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`;
 
 function Field({ id, n, icon, label, hint, error, children }: { id: string; n?: string; icon: string; label: string; hint?: string; error?: string; children: ReactNode }) {
   return (
     <div>
-      <label htmlFor={id} className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream max-sm:font-medium sm:text-base">
+      <label htmlFor={id} className="flex items-center font-sans text-[12.5px] font-semibold leading-[1.3] text-cream max-sm:font-medium sm:text-base">
         <Num n={n} icon={icon} />
         {label}
       </label>
-      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-6 text-[11.5px] sm:pl-8 sm:text-[12.5px] text-cream/70">{hint}</p>}
-      <div className="mt-1.5 sm:mt-2">{children}</div>
+      {hint && <p id={`${id}-hint`} className="mt-0.5 pl-6 text-[11px] sm:pl-8 sm:text-[12.5px] text-cream/70">{hint}</p>}
+      <div className="mt-1 sm:mt-2">{children}</div>
       <ErrorText id={`${id}-err`} msg={error} />
     </div>
   );
 }
 
-function Pills({ name, n, icon, legend, options, value, onChange, error, grid = false }: { name: keyof Values; n: string; icon: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; grid?: boolean }) {
+// Pill layouts: "grid4" short options in one row (age), "grid2" a neat 2×2
+// (where you heard of us), "stack" long answers one per line on phones.
+const PILL_LAYOUT = {
+  grid4: "grid grid-cols-2 gap-1.5 min-[360px]:grid-cols-4 sm:gap-2 [&_label]:px-1.5 sm:[&_label]:px-3.5",
+  grid2: "grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:gap-2",
+  stack: "grid grid-cols-1 gap-1.5 sm:flex sm:flex-wrap sm:gap-2",
+};
+function Pills({ name, n, icon, legend, options, value, onChange, error, layout }: { name: keyof Values; n: string; icon: string; legend: string; options: string[]; value: string; onChange: (v: string) => void; error?: string; layout: keyof typeof PILL_LAYOUT }) {
   return (
     <fieldset id={`rf-${name}`} tabIndex={-1} aria-invalid={!!error} aria-describedby={error ? `rf-${name}-err` : undefined} className="outline-none">
-      <legend className="flex items-center font-sans text-[13.5px] font-semibold leading-[1.3] text-cream max-sm:font-medium sm:text-base">
+      <legend className="flex items-center font-sans text-[12.5px] font-semibold leading-[1.3] text-cream max-sm:font-medium sm:text-base">
         <Num n={n} icon={icon} />
         {legend}
       </legend>
-      <div className={`mt-1.5 sm:mt-2 ${grid ? "grid grid-cols-2 gap-1.5 min-[360px]:grid-cols-4 sm:gap-2 [&_label]:px-2 sm:[&_label]:px-3.5" : "flex flex-wrap gap-1.5 sm:gap-2"}`}>
+      <div className={`mt-1 sm:mt-2 ${PILL_LAYOUT[layout]}`}>
         {options.map((o) => {
           const id = `rf-${name}-${o.replace(/\W+/g, "-")}`;
           return (
@@ -176,7 +183,7 @@ function Pills({ name, n, icon, legend, options, value, onChange, error, grid = 
               <input id={id} type="radio" name={name} value={o} checked={value === o} onChange={() => onChange(o)} className="peer sr-only" />
               <label
                 htmlFor={id}
-                className={`flex min-h-[40px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] px-3 py-1.5 text-center font-sans text-[13px] font-semibold leading-tight sm:px-3.5 sm:text-[14px] transition-colors peer-checked:border-marigold peer-checked:bg-marigold peer-checked:text-plum peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${
+                className={`flex min-h-[36px] cursor-pointer select-none items-center justify-center rounded-full border-[1.5px] px-3 py-1 text-center font-sans text-[12.5px] font-semibold leading-tight sm:min-h-[40px] sm:px-3.5 sm:py-1.5 sm:text-[14px] transition-colors peer-checked:border-marigold peer-checked:bg-marigold peer-checked:text-plum peer-focus-visible:ring-4 peer-focus-visible:ring-marigold/40 ${
                   error ? "border-[#FF6FA3] text-cream" : "border-marigold/55 text-cream hover:border-marigold hover:bg-white/5"
                 }`}
               >
@@ -342,7 +349,7 @@ export default function RegisterForm() {
           </div>
 
           {/* purple jharokha panel: arched top, gold inner frame */}
-          <div ref={panelRef} className="register-arch bg-royal-tex relative scroll-mt-14 px-3.5 pb-5 pt-9 shadow-[0_12px_28px_rgba(70,8,60,0.3)] sm:scroll-mt-20 sm:px-10 sm:pb-12 sm:pt-20">
+          <div ref={panelRef} className="register-arch bg-royal-tex relative scroll-mt-14 px-5 pb-6 pt-9 shadow-[0_12px_28px_rgba(70,8,60,0.3)] sm:scroll-mt-20 sm:px-10 sm:pb-12 sm:pt-20">
             <div aria-hidden className="register-arch-inner pointer-events-none absolute inset-2.5 border-2 border-marigold/70 sm:inset-4" />
             <div className="relative">
               <div className="text-center">
@@ -363,7 +370,7 @@ export default function RegisterForm() {
                   {reg && <p className="mt-3 text-[14px] text-cream/85">Registration ID <span className="font-mono font-bold text-marigold">{reg.regId}</span>. Keep it handy.</p>}
                 </div>
               ) : (
-                <form noValidate onSubmit={onSubmit} className="mx-auto mt-4 max-w-[560px] space-y-3.5 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
+                <form noValidate onSubmit={onSubmit} className="mx-auto mt-4 max-w-[560px] space-y-3 sm:mt-10 sm:space-y-7" aria-describedby="rf-note">
                   {notice && (
                     <p role="status" className="coral-pill rounded-2xl px-4 py-3 text-center font-sans text-[13px] font-bold sm:text-[14.5px]">
                       {notice}
@@ -373,12 +380,12 @@ export default function RegisterForm() {
                     <input id="rf-name" name="name" type="text" autoComplete="name" required aria-required aria-invalid={!!errors.name} aria-describedby={desc("name")} value={v.name} onChange={(e) => set("name", e.target.value)} placeholder="Your full name" maxLength={80} className={inputCls(errors.name)} />
                   </Field>
 
-                  <Pills name="ageGroup" n="02" icon="group" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} grid />
+                  <Pills name="ageGroup" n="02" icon="group" legend="What’s your age group?" options={f.ageGroups} value={v.ageGroup} onChange={(x) => set("ageGroup", x)} error={errors.ageGroup} layout="grid4" />
 
-                  <div className="grid gap-3.5 sm:grid-cols-2 sm:gap-5">
+                  <div className="grid gap-3 sm:grid-cols-2 sm:gap-5">
                     <Field id="rf-mobile" icon="phone" label="Mobile number" error={errors.mobile}>
                       <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.mobile ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
-                        <span aria-hidden className="grid shrink-0 place-items-center border-r-2 border-plum/15 bg-marigold/90 px-3 font-sans text-[16px] font-extrabold text-plum">+91</span>
+                        <span aria-hidden className="grid shrink-0 place-items-center border-r-2 border-plum/15 bg-marigold/90 px-2.5 font-sans text-[14px] font-extrabold text-plum sm:px-3 sm:text-[16px]">+91</span>
                         <input id="rf-mobile" name="mobile" type="tel" inputMode="numeric" autoComplete="tel-national" required aria-required aria-label="Mobile number, 10 digits, India +91" aria-invalid={!!errors.mobile} aria-describedby={desc("mobile")} value={v.mobile} onChange={(e) => set("mobile", e.target.value.replace(/[^\d\s+-]/g, "").slice(0, 16))} placeholder="98765 43210" className="block h-10 w-full min-w-0 bg-transparent px-3 py-2 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
                       </div>
                     </Field>
@@ -389,13 +396,13 @@ export default function RegisterForm() {
 
                   <Field id="rf-instagram" n="03" icon="insta" label="What’s your Instagram handle?" hint="Optional, but useful for event communication" error={errors.instagram}>
                     <div className={`flex overflow-hidden rounded-xl border-2 bg-cream focus-within:border-marigold focus-within:ring-4 focus-within:ring-marigold/30 ${errors.instagram ? "border-[#FF6FA3] ring-2 ring-[#FF6FA3]/40" : "border-transparent"}`}>
-                      <span aria-hidden className="grid shrink-0 place-items-center pl-3.5 font-sans text-[16px] font-extrabold text-plum/60">@</span>
+                      <span aria-hidden className="grid shrink-0 place-items-center pl-3 font-sans text-[14px] font-extrabold text-plum/60 sm:pl-3.5 sm:text-[16px]">@</span>
                       <input id="rf-instagram" name="instagram" type="text" autoCapitalize="none" autoCorrect="off" spellCheck={false} aria-invalid={!!errors.instagram} aria-describedby={desc("instagram", true)} value={v.instagram} onChange={(e) => set("instagram", stripAt(e.target.value))} placeholder="yourhandle" maxLength={31} className="block h-10 w-full min-w-0 bg-transparent py-2 pl-1 pr-3.5 font-sans text-[16px] font-medium text-plum placeholder:text-plum/45 max-sm:placeholder:text-[14px] max-sm:placeholder:text-plum/40 outline-none" />
                     </div>
                   </Field>
 
                   <div>
-                    <Pills name="heardFrom" n="04" icon="megaphone" legend="How did you hear about Disconnect?" options={f.heardFrom} value={v.heardFrom} onChange={(x) => set("heardFrom", x)} error={errors.heardFrom} />
+                    <Pills name="heardFrom" n="04" icon="megaphone" legend="How did you hear about Disconnect?" options={f.heardFrom} value={v.heardFrom} onChange={(x) => set("heardFrom", x)} error={errors.heardFrom} layout="grid2" />
                     {v.heardFrom === "Other" && (
                       <div className="mt-3">
                         <label htmlFor="rf-heardFromOther" className="sr-only">Where did you hear about Disconnect?</label>
@@ -409,7 +416,7 @@ export default function RegisterForm() {
                     <input id="rf-why" name="why" type="text" aria-describedby={desc("why")} value={v.why} onChange={(e) => set("why", e.target.value)} placeholder="Keep it casual" maxLength={200} className={inputCls(errors.why)} />
                   </Field>
 
-                  <Pills name="comfortable" n="06" icon="chat" legend="Are you comfortable attending a social event where you may not know everyone?" options={f.comfortable} value={v.comfortable} onChange={(x) => set("comfortable", x)} error={errors.comfortable} />
+                  <Pills name="comfortable" n="06" icon="chat" legend="Are you comfortable attending a social event where you may not know everyone?" options={f.comfortable} value={v.comfortable} onChange={(x) => set("comfortable", x)} error={errors.comfortable} layout="stack" />
 
                   <div className="pt-0.5 sm:pt-1">
                     {tried && errCount > 0 && (
@@ -417,7 +424,7 @@ export default function RegisterForm() {
                         Please fix the {errCount === 1 ? "highlighted field" : `${errCount} highlighted fields`} above.
                       </p>
                     )}
-                    <button ref={submitRef} type="submit" disabled={status === "sending"} className="btn-primary btn-spark min-h-[50px] w-full py-3 text-[15px] disabled:cursor-wait disabled:opacity-80 sm:min-h-[56px] sm:text-lg">
+                    <button ref={submitRef} type="submit" disabled={status === "sending"} className="btn-primary btn-spark min-h-[46px] w-full py-2.5 text-[15px] disabled:cursor-wait disabled:opacity-80 sm:min-h-[56px] sm:text-lg">
                       <EnvelopeIcon className="h-[18px] w-[18px] shrink-0 text-plum" />
                       {status === "sending" ? "Sending…" : site.ctas.primary}
                     </button>
@@ -434,14 +441,14 @@ export default function RegisterForm() {
                 </form>
               )}
 
-              <p id="rf-note" className="mx-auto mt-4 max-w-[460px] text-balance text-center text-[11.5px] leading-snug text-cream/70 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
+              <p id="rf-note" className="mx-auto mt-4 max-w-[460px] text-balance text-center text-[11px] leading-snug text-cream/65 sm:mt-7 sm:text-[13.5px]">{r.note}</p>
               <div className="mt-1 sm:mt-2 flex flex-wrap items-center justify-center gap-x-3 max-sm:flex-nowrap max-sm:gap-x-1 gap-y-0 font-semibold sm:gap-x-6">
-                <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[14px] text-marigold sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
-                  <WhatsAppIcon className="h-5 w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
+                <a href={site.links.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-1.5 px-2 text-[13px] text-marigold sm:gap-2 sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
+                  <WhatsAppIcon className="h-4 w-4 sm:h-5 sm:w-5" /> <span className="sm:hidden">WhatsApp</span><span className="hidden sm:inline">{site.ctas.whatsapp}</span>
                 </a>
                 <span aria-hidden className="h-4 w-px bg-marigold/40 sm:hidden" />
-                <a href={site.links.instagramDM} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-2 px-2 text-[14px] text-marigold sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
-                  <InstagramIcon className="h-5 w-5" /> <span className="sm:hidden">Instagram DM</span><span className="hidden sm:inline">{site.ctas.instagram}</span>
+                <a href={site.links.instagramDM} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center gap-1.5 px-2 text-[13px] text-marigold sm:gap-2 sm:text-[15px] underline decoration-marigold/40 underline-offset-4 hover:decoration-marigold">
+                  <InstagramIcon className="h-4 w-4 sm:h-5 sm:w-5" /> <span className="sm:hidden">Instagram DM</span><span className="hidden sm:inline">{site.ctas.instagram}</span>
                 </a>
               </div>
             </div>
