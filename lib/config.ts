@@ -54,9 +54,9 @@ export const site = {
     cards: [
       { title: "Dreamy Diwali decor", body: "A beautiful home dressed up in flowers, fairy lights and all things festive.", image: "/scene/decor.jpg", alt: "A hallway lined with marigold garlands and fairy lights" },
       { title: "Live DJ & dance floor", body: "Bollywood bangers on the decks and a dance floor that never empties.", image: "/scene/dj.jpg", alt: "Two women in festive outfits playing music on DJ decks" },
-      { title: "Good food", body: "A festive spread and munchies to keep you going all night.", image: "/scene/food.jpg", alt: "A table laid out with snacks and drinks under marigold garlands" },
+      { title: "Good food", body: "A festive spread and munchies to keep you fuelled all night.", image: "/scene/food.jpg", alt: "A table laid out with snacks and drinks under marigold garlands" },
       { title: "Cards, Tambola & games", body: "Games and lots of friendly chaos.", image: "/scene/games.jpg", alt: "Playing cards scattered around a brass thali of flowers and diyas" },
-      { title: "Glitter bar", body: "Glitter, face painting and pop-up fun to finish your look.", image: "/scene/glitter.jpg", alt: "A Glitter Bar sign beside jars of coloured glitter" },
+      { title: "Glitter bar", body: "A little sparkle for your festive look, with glitter, face painting and pop-up fun.", image: "/scene/glitter.jpg", alt: "A Glitter Bar sign beside jars of coloured glitter" },
       { title: "Good people", body: "Your favourite people, new faces and an evening you won’t want to end.", image: "/scene/people.jpg", alt: "Friends dancing together in festive outfits" },
     ],
     // Helios sticker (gifting partner; Helios is a shoe care brand,
