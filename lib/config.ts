@@ -78,9 +78,9 @@ export const site = {
    * Script and linked in the sheet row.
    */
   payment: {
-    amount: "₹1,199", // shown to guests
-    amountValue: "1199.00", // same amount for the UPI app link (am=)
-    // UPI QR (cropped from the payee's QR; it already carries ₹1,199). If the
+    amount: "₹1,299", // shown to guests
+    amountValue: "1299.00", // same amount for the UPI app link (am=)
+    // UPI QR (cropped from the payee's QR; it already carries ₹1,299). If the
     // file is missing, a "QR coming soon" placeholder is shown instead.
     qrImage: "/payment-qr.png",
     upiId: "8168133686@axisbank", // copy button + "Pay with UPI app" on phones

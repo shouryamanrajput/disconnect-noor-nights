@@ -13,7 +13,7 @@ The payment step needs the **new** `scripts/sheet-apps-script.gs` and **Google D
    Use *Manage deployments*, **not** *New deployment*, so the `/exec` URL (already in `lib/config.ts`) stays the same.
 5. Test: register on the site with your own number, skip the actual payment, upload any image as the screenshot, and check that the row shows **Payment status = Screenshot received** with a Drive link, and that the file is in **My Drive → Disconnect Diwali Payments** as `DSC-XXXXXX_<name>.jpg`. Delete the test row and file afterwards.
 
-**Payment QR:** the site shows `public/payment-qr.png` (currently ISHITA's UPI QR, ₹1,199). To change it, replace that file with a new QR image (square, white margin) and update `site.payment` in `lib/config.ts` (amount, `amountValue`, `upiId`, `payeeName`). If the file is missing the site shows a "QR coming soon" placeholder.
+**Payment QR:** the site shows `public/payment-qr.png` (currently ISHITA's UPI QR, ₹1,299). To change it, replace that file with a new QR image (square, white margin) and update `site.payment` in `lib/config.ts` (amount, `amountValue`, `upiId`, `payeeName`). If the file is missing the site shows a "QR coming soon" placeholder.
 
 ## One-time setup (about 5 minutes)
 
