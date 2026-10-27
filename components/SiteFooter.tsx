@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { site } from "@/lib/config";
 
-// One-line footer (the WhatsApp / Instagram links already sit under the form).
+// One-line footer (the WhatsApp / Instagram links already sit under the form),
+// plus the credit line the CC-licensed stock photos require.
 // Extra bottom padding on phones clears the sticky CTA bar.
 export default function SiteFooter() {
   return (
@@ -10,6 +11,18 @@ export default function SiteFooter() {
         <Image src="/logo.jpg" alt="Disconnect logo" width={32} height={32} sizes="32px" className="h-8 w-8 rounded-full border-2 border-marigold object-cover" />
         <p className="text-[13px] text-cream/70">© 2026 {site.fullName}</p>
       </div>
+      <p className="container-px mt-2 text-center text-[10.5px] leading-relaxed text-cream/45">
+        Stock photos via Wikimedia Commons:{" "}
+        {site.photoCredits.map((c, i) => (
+          <span key={c.url}>
+            {i > 0 && " · "}
+            <a href={c.url} target="_blank" rel="noopener noreferrer" className="underline decoration-cream/30 underline-offset-2 hover:text-cream/80">
+              {c.what}, {c.by}
+            </a>{" "}
+            ({c.license})
+          </span>
+        ))}
+      </p>
     </footer>
   );
 }

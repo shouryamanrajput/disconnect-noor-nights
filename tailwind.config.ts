@@ -33,7 +33,7 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         logo: ["var(--font-logo)", "Georgia", "serif"],
       },
-      maxWidth: { container: "1180px", content: "960px" },
+      maxWidth: { container: "1320px", content: "960px" },
     },
   },
   plugins: [],

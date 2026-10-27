@@ -6,6 +6,7 @@ import "./globals.css";
 import { site } from "@/lib/config";
 import SmoothScroll from "@/components/SmoothScroll";
 import PauseOffscreen from "@/components/PauseOffscreen";
+import RevealOnScroll from "@/components/RevealOnScroll";
 
 // Fonts matched against the poster (see shots/font-compare.png):
 // "दिवाली" → Laila Bold (heavy Devanagari with cut, flared terminals)
@@ -66,6 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-poster font-sans text-cream antialiased" suppressHydrationWarning>
         <SmoothScroll />
         <PauseOffscreen />
+        <RevealOnScroll />
         {children}
       </body>
     </html>

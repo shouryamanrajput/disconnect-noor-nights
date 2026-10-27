@@ -44,6 +44,51 @@ export const site = {
     { label: "Venue address", value: "Shared upon confirmation" },
   ],
 
+  // "The scene" section (after the deets). Photos live in /public/scene.
+  // Card 1 is the tall feature card; the last card runs full width on
+  // phones/tablets. Desktop is a 3×3 bento (card 1 spans two rows).
+  scene: {
+    heading: "The scene",
+    intro: "This Diwali, we’re doing things a little differently.",
+    subline: "A night of festive fits, filmy vibes and unforgettable memories.",
+    cards: [
+      { title: "Dreamy Diwali decor", body: "A beautiful home dressed up in flowers, fairy lights and all things festive.", image: "/scene/decor.jpg", alt: "A hallway lined with marigold garlands and fairy lights" },
+      { title: "Live DJ & dance floor", body: "Bollywood bangers on the decks and a dance floor that never empties.", image: "/scene/dj.jpg", alt: "Two women in festive outfits playing music on DJ decks" },
+      { title: "Good food", body: "A festive spread and munchies to keep you going all night.", image: "/scene/food.jpg", alt: "A table laid out with snacks and drinks under marigold garlands" },
+      { title: "Golgappa station", body: "A dedicated golgappa counter, so your snack breaks are sorted.", image: "/scene/golgappa.jpg", alt: "A yellow plate of golgappas with a bowl of pani" },
+      { title: "Cards, Tambola & games", body: "Games and lots of friendly chaos.", image: "/scene/games.jpg", alt: "Playing cards scattered around a brass thali of flowers and diyas" },
+      { title: "Fun & filmy vibes", body: "Festive fits, filmy moments and endless pictures.", image: "/scene/fun.jpg", alt: "A crowd in festive outfits dancing under warm lights" },
+      { title: "Glitter bar", body: "Glitter, face painting and pop-up fun to finish your look.", image: "/scene/glitter.jpg", alt: "A Glitter Bar sign beside jars of coloured glitter" },
+      { title: "Good people", body: "Your favourite people, new faces and an evening you won’t want to end.", image: "/scene/people.jpg", alt: "Friends dancing together in festive outfits" },
+    ],
+    // Helios sticker (gifting partner; Helios is a shoe care brand,
+    // heliosindia.com). Logo is their own, recoloured white.
+    gift: {
+      ring: "Exciting gift hampers by Helios",
+      label: "Gift hampers by",
+      logo: "/scene/helios-logo-white.png",
+      url: "https://heliosindia.com",
+    },
+    closing: "Sounds like your scene?",
+  },
+
+  // Running strips (moving left). The first sits under the hero, the crossed
+  // pair between the scene and the form.
+  marquee: {
+    top: ["Diwali House Party", "31 Oct 2026", "Omaxe, Rohtak", "Strictly ethnic", "Invite-only", "Spots are limited"],
+    a: ["Live DJ", "Bollywood bangers", "Golgappa station", "Glitter bar", "Cards & Tambola", "Good food", "Good people"],
+    b: ["Come dressed to be the main character", "See you on the dance floor", "Gift hampers by Helios"],
+  },
+
+  // The deets section's backdrop photo (Wikimedia Commons, credited below).
+  deetsImage: "/scene/deets-diya.jpg",
+
+  // Stock photos used on the page. CC BY needs a credit, shown in the footer.
+  photoCredits: [
+    { what: "Golgappa", by: "Yusuke Kawasaki", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:Golgappa_Pani_Puri_India.jpg" },
+    { what: "Diya", by: "Subharnab Majumdar", license: "CC BY 2.0", url: "https://commons.wikimedia.org/wiki/File:Diya_Diwali_India.jpg" },
+  ],
+
   dressCode: {
     title: "Strictly ethnic",
     body:

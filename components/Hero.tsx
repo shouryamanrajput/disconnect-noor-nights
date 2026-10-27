@@ -61,7 +61,7 @@ export default function Hero() {
 
       <div className="relative z-20 mx-auto flex w-full max-w-[1120px] flex-1 flex-col items-center px-5 pb-6 pt-[56px] sm:px-10 sm:pb-12 sm:pt-24 lg:flex-row lg:justify-center lg:gap-[clamp(48px,8vw,130px)] lg:pb-10 lg:pt-[78px]">
         {/* ── Arch card ── */}
-        <div className="relative w-full max-w-[400px] sm:max-w-[460px] lg:w-[clamp(390px,31vw,450px)] lg:max-w-none">
+        <div className="hero-rise relative w-full max-w-[400px] sm:max-w-[460px] lg:w-[clamp(390px,31vw,450px)] lg:max-w-none">
           {/* phones / tablets: elephants peek from the arch's top corners */}
           <AnimatedElephant side="left" sizes="(min-width: 640px) 150px, 104px" priority className="absolute -left-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-left-24 sm:-top-6 sm:w-[150px] lg:hidden" />
           <AnimatedElephant side="right" sizes="(min-width: 640px) 150px, 104px" priority phase={260} className="absolute -right-5 -top-8 z-0 w-[96px] min-[400px]:w-[104px] sm:-right-24 sm:-top-6 sm:w-[150px] lg:hidden" />
@@ -107,7 +107,7 @@ export default function Hero() {
         </div>
 
         {/* ── Countdown ── */}
-        <div className="mt-6 w-full max-w-[320px] sm:mt-10 sm:max-w-[360px] lg:mt-0 lg:w-[clamp(330px,28vw,410px)] lg:max-w-none">
+        <div className="hero-rise hero-rise-late mt-6 w-full max-w-[320px] sm:mt-10 sm:max-w-[360px] lg:mt-0 lg:w-[clamp(330px,28vw,410px)] lg:max-w-none">
           <Countdown />
         </div>
       </div>

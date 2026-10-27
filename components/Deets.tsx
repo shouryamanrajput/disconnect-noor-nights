@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { site } from "@/lib/config";
 import { Ornament } from "@/components/Decor";
 import FestiveBackdrop from "@/components/FestiveBackdrop";
@@ -10,20 +11,24 @@ const icons = [
 ];
 
 // One compact section: the deets (2×2 on phones, one slim bar on desktop),
-// and the dress code as a slim coral strip.
+// and the dress code as a slim coral strip, over a soft diya-bokeh photo.
 export default function Deets() {
   return (
     <section id="deets" className="bg-royal-tex relative scroll-mt-12 overflow-hidden sm:scroll-mt-14 py-6 sm:py-9">
-      <FestiveBackdrop variant="light" inner={550} />
-      <div className="container-px relative z-10 max-w-content lg:max-w-[1080px]">
-        <div>
+      <div aria-hidden className="pointer-events-none absolute inset-0">
+        <Image src={site.deetsImage} alt="" fill sizes="100vw" className="object-cover object-[50%_40%] opacity-60" />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(113,36,148,0.92)_0%,rgba(78,20,112,0.55)_50%,rgba(113,36,148,0.94)_100%)]" />
+      </div>
+      <FestiveBackdrop variant="light" inner={680} />
+      <div className="container-px relative z-10 max-w-content lg:max-w-container">
+        <div data-reveal>
           <div className="text-center">
             <h2 className="gold-text font-display text-[1.75rem] uppercase leading-tight sm:text-[2.4rem]">The deets</h2>
             <Ornament className="mt-1" />
           </div>
         </div>
 
-        <div>
+        <div data-reveal>
           <dl className="mt-3 grid grid-cols-2 overflow-hidden rounded-2xl border-2 border-marigold/60 bg-plum/50 shadow-[0_6px_14px_rgba(20,3,36,0.25)] sm:mt-4 lg:grid-cols-4">
             {site.deets.map((d, i) => (
               <div
@@ -44,7 +49,7 @@ export default function Deets() {
           </dl>
         </div>
 
-        <div>
+        <div data-reveal>
           <div id="dress-code" className="mt-4 scroll-mt-24 rounded-xl border-2 border-marigold/60 bg-gradient-to-br from-coral to-rani px-3.5 py-2.5 text-center shadow-[0_6px_14px_rgba(20,3,36,0.25)] sm:mt-5 sm:flex sm:items-center sm:gap-5 sm:px-6 sm:py-3 sm:text-left">
             <p className="sm:shrink-0">
               <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-cream/90">Dress code<span className="sm:hidden"> · </span></span>
