@@ -9,7 +9,7 @@ const nav = [
   { href: "#deets", label: "The deets" },
   { href: "#dress-code", label: "Dress code" },
   { href: "#scene", label: "The scene" },
-  { href: "#register", label: "Request" },
+  { href: "#register", label: site.registrationsOpen ? "Request" : "Registrations" },
 ];
 
 // Highlights the nav link of the section in the middle band of the screen.
@@ -62,7 +62,7 @@ export default function SiteHeader() {
             </span>
           ))}
         </nav>
-        <InviteButton className="min-h-[40px] shrink-0 gap-1.5 px-3 py-1.5 sm:min-h-[44px] text-[13px] max-[379px]:[&_svg]:hidden min-[380px]:px-3.5 min-[380px]:text-[13.5px] shadow-[0_3px_0_#356428] sm:px-5 sm:py-2.5 sm:text-sm" />
+        <InviteButton short className="min-h-[40px] shrink-0 gap-1.5 px-3 py-1.5 sm:min-h-[44px] text-[13px] max-[379px]:[&_svg]:hidden min-[380px]:px-3.5 min-[380px]:text-[13.5px] shadow-[0_3px_0_#356428] sm:px-5 sm:py-2.5 sm:text-sm" />
       </div>
     </header>
   );

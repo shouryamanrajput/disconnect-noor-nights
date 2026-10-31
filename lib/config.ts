@@ -9,7 +9,16 @@
  * Anything marked // CONFIRM is worth a quick double-check.
  */
 
+/**
+ * REGISTRATIONS SWITCH. false = the page shows a "Registrations are closed"
+ * card instead of the form + payment step, and every "Request an invite"
+ * button becomes a "Registrations closed" pill. Set to true to reopen
+ * (nothing else to change; the form, payment step and Sheet wiring are kept).
+ */
+const registrationsOpen = false;
+
 export const site = {
+  registrationsOpen,
   name: "Disconnect",
   fullName: "Disconnect — Fun Offline Experiences",
   handle: "@disconnectfr",
@@ -35,7 +44,7 @@ export const site = {
   description:
     "Disconnect's Diwali House Party — a night of festive fits, filmy vibes " +
     "and unforgettable memories. Saturday, 31 October 2026, 5:30 PM onwards " +
-    "at Omaxe, Rohtak. Invite-only, spots are limited.",
+    "at Omaxe, Rohtak. " + (registrationsOpen ? "Invite-only, spots are limited." : "Registrations are now closed."),
 
   deets: [
     { label: "Date", value: "Saturday, 31 October 2026" },
@@ -67,13 +76,13 @@ export const site = {
       logo: "/scene/helios-logo-white.png",
       url: "https://heliosindia.com",
     },
-    closing: "Sounds like your scene?",
+    closing: registrationsOpen ? "Sounds like your scene?" : "Thank you for the love!",
   },
 
   // Running strips (moving left). The first sits under the hero, the crossed
   // pair between the scene and the form.
   marquee: {
-    top: ["Diwali House Party", "31 Oct 2026", "Omaxe, Rohtak", "Strictly ethnic", "Invite-only", "Spots are limited"],
+    top: ["Diwali House Party", "31 Oct 2026", "Omaxe, Rohtak", "Strictly ethnic", "Invite-only", registrationsOpen ? "Spots are limited" : "Registrations closed"],
     a: ["Live DJ", "Bollywood bangers", "Glitter bar", "Cards & Tambola", "Good food", "Good people"],
     b: ["Come dressed to be the main character", "See you on the dance floor", "Gift hampers by Helios"],
   },
@@ -103,6 +112,13 @@ export const site = {
     thanksTitle: "You're on the request list!",
     thanksBody: "Payment screenshot received. We'll verify it and confirm on WhatsApp/Instagram soon.",
     soonMessage: "Registrations open soon! Meanwhile, DM us on Instagram to get on the list.",
+  },
+
+  // Shown in place of the form while registrationsOpen is false.
+  closed: {
+    heading: "Registrations are closed",
+    line: "Registrations for the Diwali House Party are now closed. Thank you for the love!",
+    note: "Already registered? We'll reach out on WhatsApp.",
   },
 
   /**
@@ -147,6 +163,7 @@ export const site = {
 
   ctas: {
     primary: "Request an invite",
+    closed: "Registrations closed",
     instagram: "DM on Instagram",
     whatsapp: "Join the WhatsApp community",
   },
